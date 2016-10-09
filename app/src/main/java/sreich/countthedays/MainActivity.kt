@@ -1,5 +1,6 @@
 package sreich.countthedays
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
 import android.view.View
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import java.util.*
@@ -25,20 +27,28 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
+        fab.setOnClickListener(CreateNewClickListener())
 
-        repeat(50) {
-            counterList.add(DayCounter("name number $it"))
-        }
+        loadData()
 
         val listView = findViewById(R.id.listview) as ListView
         listView.adapter = DayCounterAdapter(this, counterList)
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener() { adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
-            val intent = Intent(this, NewCounterActivity::class.java)
+        listView.onItemClickListener = ItemClickListener()
+    }
+
+    private fun loadData() {
+        repeat(50) {
+            val c = Calendar.getInstance()
+            c.set(2050, 1, 2)
+
+            counterList.add(DayCounter("name number $it", c))
+        }
+    }
+
+    inner class ItemClickListener : OnItemClickListener {
+        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
 
             val currentCounter = counterList[position]
             intent.putExtra("name", currentCounter.name)
@@ -52,8 +62,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    inner class CreateNewClickListener : View.OnClickListener {
+        override fun onClick(view: View) {
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
+            startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+        }
+    }
 }
 
-class DayCounter(val name: String) {
-
+class DayCounter(val name: String, val calendar: Calendar) {
 }
