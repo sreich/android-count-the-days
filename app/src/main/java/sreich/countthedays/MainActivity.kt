@@ -22,14 +22,21 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById(R.id.fab) as FloatingActionButton
         fab.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
 
-        val stringList = listOf("test1", "test2", "test3", "test4")
+        val counterList = mutableListOf<DayCounter>()
+        repeat(50) {
+                counterList.add(DayCounter("name number $it"))
+        }
 
         val listView = findViewById(R.id.listview) as ListView
-        listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, stringList)
+        listView.adapter = DayCounterAdapter(this, counterList)
 
         listView.onItemClickListener = AdapterView.OnItemClickListener() { adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
 
         }
     }
+
+}
+
+class DayCounter(val name: String) {
 
 }
