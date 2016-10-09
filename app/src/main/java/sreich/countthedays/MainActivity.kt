@@ -1,5 +1,6 @@
 package sreich.countthedays
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -20,7 +21,9 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
+        fab.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
 
         val counterList = mutableListOf<DayCounter>()
         repeat(50) {
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         listView.adapter = DayCounterAdapter(this, counterList)
 
         listView.onItemClickListener = AdapterView.OnItemClickListener() { adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
-
+            startActivity(Intent(this, NewCounterActivity::class.java))
         }
     }
 
