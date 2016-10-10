@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.*
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.*
+import android.content.Intent
 import android.icu.text.DateFormat
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -44,12 +45,16 @@ class NewCounterActivity : AppCompatActivity() {
 
         val okButton = findViewById(R.id.ok) as Button
         okButton.setOnClickListener {
-            setResult(RESULT_OK)
+            val data = Intent()
+            data.putExtra("name", nameText.text.toString())
+
+            setResult(RESULT_OK, data)
             finish()
         }
 
         val cancelButton = findViewById(R.id.cancel) as Button
         cancelButton.setOnClickListener {
+            assert(false)
             setResult(Activity.RESULT_CANCELED)
             finish()
         }

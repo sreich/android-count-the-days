@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
             if (resultCode == RESULT_OK) {
                 val counterToUpdate = counterList[editingIndex]
 
-                counterToUpdate.name = data!!.getStringExtra("name")
+                val name = data!!.getStringExtra("name")
+                counterToUpdate.name = name
             }
         }
     }
