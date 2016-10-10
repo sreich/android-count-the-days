@@ -13,7 +13,7 @@ import android.widget.BaseAdapter
 class DayCounterAdapter(context: Context, val counterList: List<DayCounter>) : BaseAdapter() {
     val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-    override fun getItem(position: Int) = counterList.get(position)
+    override fun getItem(position: Int) = counterList[position]
 
     override fun getItemId(position: Int) = position.toLong()
 

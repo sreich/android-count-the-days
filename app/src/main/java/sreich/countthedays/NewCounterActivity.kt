@@ -1,6 +1,9 @@
 package sreich.countthedays
 
+import android.app.Activity
+import android.app.Activity.*
 import android.app.DatePickerDialog
+import android.app.DatePickerDialog.*
 import android.icu.text.DateFormat
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -30,15 +33,26 @@ class NewCounterActivity : AppCompatActivity() {
 
         val currentCalendar = intent.getSerializableExtra("calendar") as Calendar
 
-        val dateDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
+        val dateDialog = DatePickerDialog(this, OnDateSetListener { datePicker, year, month, day ->
             datePicked(datePicker, year, month, day)
         }, currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.DATE))
 
-        val button = findViewById(R.id.dateText) as EditText
-        button.setOnClickListener {
+        val dateText = findViewById(R.id.dateText) as EditText
+        dateText.setOnClickListener {
             dateDialog.show()
         }
 
+        val okButton = findViewById(R.id.ok) as Button
+        okButton.setOnClickListener {
+            setResult(RESULT_OK)
+            finish()
+        }
+
+        val cancelButton = findViewById(R.id.cancel) as Button
+        cancelButton.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
     }
 
     private fun datePicked(datePicker: DatePicker, year: Int, month: Int, day: Int) {

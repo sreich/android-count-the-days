@@ -18,6 +18,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     val counterList = mutableListOf<DayCounter>()
+    var editingIndex = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +47,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    val EDIT_LIST_ITEM_REQUEST = 0
+
+    //edit the list item
     inner class ItemClickListener : OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            editingIndex = position
+
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
 
             val currentCounter = counterList[position]
@@ -58,7 +64,17 @@ class MainActivity : AppCompatActivity() {
 
             intent.putExtra("calendar", c)
 
-            startActivity(intent)
+            startActivityForResult(intent, EDIT_LIST_ITEM_REQUEST)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == EDIT_LIST_ITEM_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                val counterToUpdate = counterList[editingIndex]
+
+                counterToUpdate.name = data!!.getStringExtra("name")
+            }
         }
     }
 
@@ -70,5 +86,5 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class DayCounter(val name: String, val calendar: Calendar) {
+class DayCounter(var name: String, val calendar: Calendar) {
 }
