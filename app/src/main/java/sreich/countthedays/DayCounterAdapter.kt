@@ -8,10 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import org.joda.time.DateTime
-import org.joda.time.Days
-import org.joda.time.Months
-import org.joda.time.Years
+import org.joda.time.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,10 +58,10 @@ class DayCounterAdapter(context: Context, val counterList: List<DayCounter>) : B
 
         val dateTime = dayCounter.dateTime
 
-        val now = DateTime.now()
-        val years = Years.yearsBetween(dateTime, now).years
-        val months = Months.monthsBetween(dateTime, now).months
-        val days = Days.daysBetween(dateTime, now).days
+        val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDayTime())
+        val years = period.years
+        val months = period.months
+        val days = period.days
 
         val yearsString = if (years > 0) {
             "$years years, "
