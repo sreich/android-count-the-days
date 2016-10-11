@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import org.joda.time.DateTime
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -38,12 +39,24 @@ class MainActivity : AppCompatActivity() {
         listView.onItemClickListener = ItemClickListener()
     }
 
+    /**
+     * data for testing
+     */
     private fun loadData() {
-        repeat(50) {
-            val c = Calendar.getInstance()
-            c.set(2050, 1, 2)
+        val now = DateTime.now()
 
-            counterList.add(DayCounter("name number $it", c))
+        //fixme off by one? not using last index in the view!!
+        val a = mutableListOf<DateTime>().apply {
+            add(now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0))
+            add(now.minusYears(0).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0))
+            add(now.minusYears(1).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0))
+            add(now.minusYears(0).minusMonths(3).minusDays(24).minusHours(0).minusMinutes(0))
+            add(now.minusYears(1).minusMonths(3).minusDays(10).minusHours(0).minusMinutes(0))
+            add(now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52))
+        }
+
+        a.forEachIndexed { i, dateTime ->
+            counterList.add(DayCounter(name = "test name number: $i", dateTime = dateTime))
         }
     }
 
@@ -53,16 +66,13 @@ class MainActivity : AppCompatActivity() {
     inner class ItemClickListener : OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             editingIndex = position
-
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
 
             val currentCounter = counterList[position]
             intent.putExtra("name", currentCounter.name)
 
-            val c = Calendar.getInstance()
-            c.set(2050, 1, 2)
 
-            intent.putExtra("calendar", c)
+            intent.putExtra("dateTime", currentCounter.dateTime)
 
             startActivityForResult(intent, EDIT_LIST_ITEM_REQUEST)
         }
@@ -87,5 +97,5 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class DayCounter(var name: String, val calendar: Calendar) {
+class DayCounter(var name: String, val dateTime: DateTime) {
 }
