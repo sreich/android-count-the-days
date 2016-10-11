@@ -63,22 +63,22 @@ class DayCounterAdapter(context: Context, val counterList: List<DayCounter>) : B
         val months = period.months
         val days = period.days
 
-        val yearsString = if (years > 0) {
-            "$years years, "
-        } else {
-            ""
+        val yearsString = when {
+            years == 1 -> "$years year, "
+            years > 0 -> "$years years, "
+            else -> ""
         }
 
-        val monthsString = if (months > 0) {
-            "$months months, "
-        } else {
-            ""
+        val monthsString = when {
+            months == 1 -> "$months month, "
+            months > 0 -> "$months months, "
+            else -> ""
         }
 
-        val daysString = if (days > 0) {
-            "$days days"
-        } else {
-            ""
+        val daysString = when {
+            days == 1 -> "$days day"
+            days > 0 -> "$days days"
+            else -> ""
         }
 
         dateTextView.text = "$yearsString $monthsString$daysString"
