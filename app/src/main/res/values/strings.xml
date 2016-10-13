@@ -165,4 +165,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_new_counter">NewCounterActivity</string>
+    <string name="menu_delete">Delete</string>
 </resources>

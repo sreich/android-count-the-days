@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
 import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var gson: Gson
 
+    lateinit var adapter: DayCounterAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,11 +46,13 @@ class MainActivity : AppCompatActivity() {
         val createNewFab = findViewById(R.id.fab) as FloatingActionButton
         createNewFab.setOnClickListener(CreateNewClickListener())
 
-
         counterList = loadSave()
+
         //loadData()
         val listView = findViewById(R.id.listview) as ListView
-        listView.adapter = DayCounterAdapter(this, counterList)
+        registerForContextMenu(listView)
+        adapter = DayCounterAdapter(this, counterList)
+        listView.adapter = adapter
 
         listView.onItemClickListener = ItemClickListener()
     }
@@ -87,10 +92,31 @@ class MainActivity : AppCompatActivity() {
             val currentCounter = counterList[position]
             intent.putExtra("name", currentCounter.name)
 
-
             intent.putExtra("dateTime", currentCounter.dateTime)
 
             startActivityForResult(intent, ActivityRequest.EditListItem.value)
+        }
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+
+        if (v!!.id == R.id.listview) {
+            menuInflater.inflate(R.menu.menu_list, menu)
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+        when (item.itemId) {
+            R.id.delete -> {
+                //delete this one
+                counterList.removeAt(info.position)
+                adapter.notifyDataSetChanged()
+                return true
+            }
+
+            else -> return super.onContextItemSelected(item)
         }
     }
 
