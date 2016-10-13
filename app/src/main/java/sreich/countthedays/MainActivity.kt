@@ -1,25 +1,35 @@
 package sreich.countthedays
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import com.fatboyindustrial.gsonjodatime.Converters
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import org.joda.time.DateTime
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    val counterList = mutableListOf<DayCounter>()
+    var counterList = mutableListOf<DayCounter>() //loadSave()
+
     var editingIndex = -1
+
+    lateinit var gson: Gson
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,11 +38,14 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener(CreateNewClickListener())
+        gson = Converters.registerDateTime(GsonBuilder()).create()
 
-        loadData()
+        val createNewFab = findViewById(R.id.fab) as FloatingActionButton
+        createNewFab.setOnClickListener(CreateNewClickListener())
 
+
+        counterList = loadSave()
+        //loadData()
         val listView = findViewById(R.id.listview) as ListView
         listView.adapter = DayCounterAdapter(this, counterList)
 
@@ -42,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * data for testing
      */
-    private fun loadData() {
+    private fun debugLoadData() {
         val now = DateTime.now()
 
         //fixme off by one? not using last index in the view!!
@@ -60,7 +73,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val EDIT_LIST_ITEM_REQUEST = 0
+    enum class ActivityRequest(val value: Int) {
+        EditListItem(0),
+        CreateListItem(1)
+    }
 
     //edit the list item
     inner class ItemClickListener : OnItemClickListener {
@@ -74,28 +90,63 @@ class MainActivity : AppCompatActivity() {
 
             intent.putExtra("dateTime", currentCounter.dateTime)
 
-            startActivityForResult(intent, EDIT_LIST_ITEM_REQUEST)
+            startActivityForResult(intent, ActivityRequest.EditListItem.value)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == EDIT_LIST_ITEM_REQUEST) {
-            if (resultCode == RESULT_OK) {
+        when (requestCode) {
+            ActivityRequest.EditListItem.value -> if (resultCode == RESULT_OK) {
                 val counterToUpdate = counterList[editingIndex]
 
                 val name = data!!.getStringExtra("name")
+                val dateTime = data.getSerializableExtra("dateTime") as DateTime
                 counterToUpdate.name = name
+                counterToUpdate.dateTime = dateTime
+            }
+
+            ActivityRequest.CreateListItem.value -> if (resultCode == RESULT_OK) {
+                //add the new item
+
+                val name = data!!.getStringExtra("name")
+                val dateTime = data.getSerializableExtra("dateTime") as DateTime
+                val newCounter = DayCounter(name = name, dateTime = dateTime)
+
+                counterList.add(newCounter)
+
+                saveChanges()
             }
         }
     }
 
+    private fun loadSave(): MutableList<DayCounter> {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val json = prefs.getString("counter-list-json", null) ?: return mutableListOf()
+        Log.d("daycounter", "loading: $json")
+
+        val list = gson.fromJson<MutableList<DayCounter>>(json, object : TypeToken<MutableList<DayCounter>>() {}.type)
+
+        return list
+    }
+
+    private fun saveChanges() {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val edit = prefs.edit()
+
+        val json = gson.toJson(counterList)
+
+        edit.putString("counter-list-json", json)
+        Log.d("daycounter", "saving: $json")
+
+        edit.apply()
+    }
+
     inner class CreateNewClickListener : View.OnClickListener {
         override fun onClick(view: View) {
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
+            startActivityForResult(intent, ActivityRequest.CreateListItem.value)
         }
     }
 }
 
-class DayCounter(var name: String, val dateTime: DateTime) {
-}
+data class DayCounter(var name: String, var dateTime: DateTime)
