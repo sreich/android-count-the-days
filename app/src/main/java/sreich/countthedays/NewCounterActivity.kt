@@ -22,7 +22,6 @@ import java.util.*
 
 class NewCounterActivity : AppCompatActivity() {
 
-    lateinit var dateTime: DateTime
     lateinit var newDateTime: DateTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +31,13 @@ class NewCounterActivity : AppCompatActivity() {
         val nameText = findViewById(R.id.nameText) as EditText
         nameText.setText(intent.getStringExtra("name"))
 
+        var dateTime: DateTime
         // null along with other values if we're creating a new entry.
         // else it'll be the existing data that we're editing
         dateTime = intent.getSerializableExtra("dateTime") as? DateTime ?: DateTime.now()//.minusDays(5)
 
         val dateDialog = DatePickerDialog(this, OnDateSetListener { datePicker, year, month, day ->
-            datePicked(datePicker, year, month, day)
+            dateTime = datePicked(datePicker, year, month + 1, day)
         }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth)
 
         val dateText = findViewById(R.id.dateText) as EditText

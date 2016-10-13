@@ -58,7 +58,7 @@ class DayCounterAdapter(context: Context, val counterList: List<DayCounter>) : B
 
         val dateTime = dayCounter.dateTime
 
-        val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDayTime())
+        val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
         val years = period.years
         val months = period.months
         val days = period.days
@@ -80,9 +80,13 @@ class DayCounterAdapter(context: Context, val counterList: List<DayCounter>) : B
             days > 0 -> "$days days"
             else -> ""
         }
+        val finalDateText = if (days == 0 && months == 0 && years == 0) {
+            "now"
+        } else {
+            "$yearsString$monthsString$daysString"
+        }
 
-        dateTextView.text = "$yearsString $monthsString$daysString"
-
+        dateTextView.text = finalDateText
         return view
     }
 

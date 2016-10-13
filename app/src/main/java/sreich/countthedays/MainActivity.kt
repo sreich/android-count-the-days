@@ -48,7 +48,8 @@ class MainActivity : AppCompatActivity() {
 
         counterList = loadSave()
 
-        //loadData()
+        //debugLoadData()
+
         val listView = findViewById(R.id.listview) as ListView
         registerForContextMenu(listView)
         adapter = DayCounterAdapter(this, counterList)
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         //fixme off by one? not using last index in the view!!
         val a = mutableListOf<DateTime>().apply {
+            add(now.minusYears(0).minusMonths(0).minusDays(1).minusHours(0).minusMinutes(0))
             add(now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0))
             add(now.minusYears(0).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0))
             add(now.minusYears(1).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0))
