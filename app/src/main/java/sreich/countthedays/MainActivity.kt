@@ -105,10 +105,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreateContextMenu(menu, v, menuInfo)
 
         if (v!!.id == R.id.listview) {
-            //menuInflater.inflate(R.menu.menu_list, menu)
-            for (menuItem in resources.getStringArray(R.array.menu)) {
-                menu!!.add(Menu.NONE, 0, 0, menuItem)
-            }
+            menuInflater.inflate(R.menu.menu_list, menu)
         }
     }
 
@@ -118,6 +115,15 @@ class MainActivity : AppCompatActivity() {
             R.id.delete -> {
                 //delete this one
                 counterList.removeAt(info.position)
+
+                adapter.notifyDataSetChanged()
+                return true
+            }
+
+            R.id.reset -> {
+                val counter = counterList[info.position]
+                counter.dateTime = DateTime.now()
+
                 adapter.notifyDataSetChanged()
                 return true
             }

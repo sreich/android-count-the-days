@@ -8,4 +8,8 @@
             android:icon="@android:drawable/ic_menu_delete"
              android:title="@string/menu_delete" />
 
+       <item android:id="@+id/reset"
+            android:icon="@android:drawable/ic_menu_revert"
+             android:title="@string/menu_reset" />
+
 </menu>
