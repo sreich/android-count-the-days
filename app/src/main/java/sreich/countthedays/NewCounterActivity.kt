@@ -55,6 +55,8 @@ class NewCounterActivity : AppCompatActivity() {
 
             inputType = InputType.TYPE_NULL
             setText(formatDate(dateTime))
+            setTextIsSelectable(false)
+            keyListener = null
         }
 
         val okButton = findViewById(R.id.ok) as Button

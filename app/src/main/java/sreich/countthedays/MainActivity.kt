@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.ContextMenu
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -104,7 +105,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreateContextMenu(menu, v, menuInfo)
 
         if (v!!.id == R.id.listview) {
-            menuInflater.inflate(R.menu.menu_list, menu)
+            //menuInflater.inflate(R.menu.menu_list, menu)
+            for (menuItem in resources.getStringArray(R.array.menu)) {
+                menu!!.add(Menu.NONE, 0, 0, menuItem)
+            }
         }
     }
 
