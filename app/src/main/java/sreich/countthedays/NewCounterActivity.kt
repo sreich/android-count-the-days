@@ -11,12 +11,15 @@ import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.InputType
 import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.DateTimeParser
 import java.util.*
 
@@ -40,9 +43,15 @@ class NewCounterActivity : AppCompatActivity() {
             dateTime = datePicked(datePicker, year, month + 1, day)
         }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth)
 
-        val dateText = findViewById(R.id.dateText) as EditText
-        dateText.setOnClickListener {
-            dateDialog.show()
+        val dateText = (findViewById(R.id.dateText) as EditText).apply {
+            setOnFocusChangeListener { view, hasFocus ->
+                if (hasFocus) {
+                    dateDialog.show()
+                }
+            }
+
+            inputType = InputType.TYPE_NULL
+            setText(dateTime.toString(DateTimeFormat.shortDate()))
         }
 
         val okButton = findViewById(R.id.ok) as Button

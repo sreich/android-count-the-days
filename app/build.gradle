@@ -6,13 +6,14 @@ android {
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "sreich.countthedays"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
         release {
             minifyEnabled false
