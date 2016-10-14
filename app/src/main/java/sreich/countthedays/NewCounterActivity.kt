@@ -26,6 +26,8 @@ import java.util.*
 class NewCounterActivity : AppCompatActivity() {
 
     lateinit var newDateTime: DateTime
+    lateinit var dateText: EditText
+    lateinit var dateTime: DateTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,16 +36,17 @@ class NewCounterActivity : AppCompatActivity() {
         val nameText = findViewById(R.id.nameText) as EditText
         nameText.setText(intent.getStringExtra("name"))
 
-        var dateTime: DateTime
         // null along with other values if we're creating a new entry.
         // else it'll be the existing data that we're editing
         dateTime = intent.getSerializableExtra("dateTime") as? DateTime ?: DateTime.now()//.minusDays(5)
 
         val dateDialog = DatePickerDialog(this, OnDateSetListener { datePicker, year, month, day ->
             dateTime = datePicked(datePicker, year, month + 1, day)
+            dateText.setText(formatDate(dateTime))
+
         }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth)
 
-        val dateText = (findViewById(R.id.dateText) as EditText).apply {
+        dateText = (findViewById(R.id.dateText) as EditText).apply {
             setOnFocusChangeListener { view, hasFocus ->
                 if (hasFocus) {
                     dateDialog.show()
@@ -51,7 +54,7 @@ class NewCounterActivity : AppCompatActivity() {
             }
 
             inputType = InputType.TYPE_NULL
-            setText(dateTime.toString(DateTimeFormat.shortDate()))
+            setText(formatDate(dateTime))
         }
 
         val okButton = findViewById(R.id.ok) as Button
@@ -69,6 +72,10 @@ class NewCounterActivity : AppCompatActivity() {
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
+    }
+
+    private fun formatDate(dateTime: DateTime): String {
+        return dateTime.toString(DateTimeFormat.shortDate())
     }
 
     private fun activityInit() {
