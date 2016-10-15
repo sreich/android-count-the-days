@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
-        adapter = DayCounterAdapter(context = this, counterList = counterList, listener =ListItemClickListener() )
+        adapter = DayCounterAdapter(context = this, counterList = counterList, listener = ListItemClickListener())
         listView.adapter = adapter
         listView.layoutManager = LinearLayoutManager(applicationContext)
         listView.itemAnimator = DefaultItemAnimator()
@@ -119,15 +119,7 @@ class MainActivity : AppCompatActivity() {
     //edit the list item
 //    inner class ItemClickListener : OnItemClickListener {
 //        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//            editingIndex = position
-//            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
-//
-//            val currentCounter = counterList[position]
-//            intent.putExtra("name", currentCounter.name)
-//
-//            intent.putExtra("dateTime", currentCounter.dateTime)
-//
-//            startActivityForResult(intent, ActivityRequest.EditListItem.value)
+
 //        }
 //    }
 
@@ -215,14 +207,21 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, ActivityRequest.CreateListItem.value)
         }
     }
-}
 
-class ListItemClickListener : DayCounterAdapter.OnItemClickListener {
-    override fun onItemClick(item: DayCounter) {
-        throw UnsupportedOperationException(
-                "not implemented") //To change body of created functions use File | Settings | File Templates.
+    inner class ListItemClickListener : DayCounterAdapter.OnItemClickListener {
+        override fun onItemClick(counter: DayCounter) {
+            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
+
+            intent.putExtra("name", counter.name)
+
+            intent.putExtra("dateTime", counter.dateTime)
+
+            startActivityForResult(intent, ActivityRequest.EditListItem.value)
+        }
+
     }
 
 }
+
 
 data class DayCounter(var name: String, var dateTime: DateTime)
