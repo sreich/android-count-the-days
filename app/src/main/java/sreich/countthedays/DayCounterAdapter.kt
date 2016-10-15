@@ -18,37 +18,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by sreich on 10/9/16.
  */
-
-//class ContentAdapter(private val items: List<ContentItem>, private val listener: ContentAdapter.OnItemClickListener) : RecyclerView.Adapter<ContentAdapter.ViewHolder>() {
-//
-//    interface OnItemClickListener {
-//        fun onItemClick(item: ContentItem)
-//    }
-//
-//    val itemCount: Int
-//        get() = items.size
-//
-//    internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//
-//        private val name: TextView
-//        private val image: ImageView
-//
-//        init {
-//            name = itemView.findViewById(R.id.name) as TextView
-//            image = itemView.findViewById(R.id.image) as ImageView
-//        }
-//
-//        fun bind(item: ContentItem, listener: OnItemClickListener) {
-//            name.setText(item.name)
-//            Picasso.with(itemView.getContext()).load(item.imageUrl).into(image)
-//            itemView.setOnClickListener(object : View.OnClickListener() {
-//                fun onClick(v: View) {
-//                    listener.onItemClick(item)
-//                }
-//            })
-//        }
-//    }
-//}
 class DayCounterAdapter(context: Context,
                         val counterList: MutableList<DayCounter>,
                         private val listener: DayCounterAdapter.OnItemClickListener) : RecyclerView.Adapter<DayViewHolder>() {
@@ -56,22 +25,16 @@ class DayCounterAdapter(context: Context,
         fun onItemClick(counter: DayCounter)
     }
 
-//    override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
-
-//    }
-
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind(counterList[position], listener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
-        val itemView = LayoutInflater.from(parent!!.context).inflate(R.layout.list_item_daycounter, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_item_daycounter, parent, false)
         return DayViewHolder(itemView)
     }
 
     override fun getItemCount() = counterList.size
-
-    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getItemId(position: Int) = position.toLong()
 
@@ -88,12 +51,6 @@ class DayCounterAdapter(context: Context,
             val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
 
             dateTextView.text = dateViewText(period)
-
-            /*
-            itemView.setOnClickListener() {
-                listener.onItemClick()
-            }
-            */
 
             itemView.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View) {

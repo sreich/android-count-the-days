@@ -87,42 +87,6 @@ class MainActivity : AppCompatActivity() {
         CreateListItem(1)
     }
 
-//    class RecyclerItemClickListener(context: Context, private val mListener: RecyclerItemClickListener.OnItemClickListener?) : RecyclerView.OnItemTouchListener {
-//
-//        interface OnItemClickListener {
-//            fun onItemClick(view: View, position: Int)
-//        }
-//
-//        internal var mGestureDetector: GestureDetector
-//
-//        init {
-//            mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onSingleTapUp(e: MotionEvent): Boolean {
-//                    return true
-//                }
-//            })
-//        }
-//
-//        override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
-//            val childView = view.findChildViewUnder(e.x, e.y)
-//            if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
-//                mListener.onItemClick(childView, view.getChildAdapterPosition(childView))
-//                return true
-//            }
-//            return false
-//        }
-//
-//        override fun onTouchEvent(view: RecyclerView, motionEvent: MotionEvent) = Unit
-//        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
-//    }
-
-    //edit the list item
-//    inner class ItemClickListener : OnItemClickListener {
-//        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-//        }
-//    }
-
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
 
@@ -213,14 +177,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
 
             intent.putExtra("name", counter.name)
-
             intent.putExtra("dateTime", counter.dateTime)
 
             startActivityForResult(intent, ActivityRequest.EditListItem.value)
         }
-
     }
-
 }
 
 
