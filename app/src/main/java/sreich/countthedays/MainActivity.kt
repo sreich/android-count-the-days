@@ -7,14 +7,15 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
 import android.util.Log
-import android.view.ContextMenu
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
@@ -51,12 +52,12 @@ class MainActivity : AppCompatActivity() {
 
         //debugLoadData()
 
-        val listView = findViewById(R.id.listview) as ListView
+        val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
-        adapter = DayCounterAdapter(this, counterList)
+        adapter = DayCounterAdapter(context = this, counterList = counterList, listener =ListItemClickListener() )
         listView.adapter = adapter
-
-        listView.onItemClickListener = ItemClickListener()
+        listView.layoutManager = LinearLayoutManager(applicationContext)
+        listView.itemAnimator = DefaultItemAnimator()
     }
 
     /**
@@ -86,20 +87,49 @@ class MainActivity : AppCompatActivity() {
         CreateListItem(1)
     }
 
+//    class RecyclerItemClickListener(context: Context, private val mListener: RecyclerItemClickListener.OnItemClickListener?) : RecyclerView.OnItemTouchListener {
+//
+//        interface OnItemClickListener {
+//            fun onItemClick(view: View, position: Int)
+//        }
+//
+//        internal var mGestureDetector: GestureDetector
+//
+//        init {
+//            mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+//                override fun onSingleTapUp(e: MotionEvent): Boolean {
+//                    return true
+//                }
+//            })
+//        }
+//
+//        override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
+//            val childView = view.findChildViewUnder(e.x, e.y)
+//            if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
+//                mListener.onItemClick(childView, view.getChildAdapterPosition(childView))
+//                return true
+//            }
+//            return false
+//        }
+//
+//        override fun onTouchEvent(view: RecyclerView, motionEvent: MotionEvent) = Unit
+//        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
+//    }
+
     //edit the list item
-    inner class ItemClickListener : OnItemClickListener {
-        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            editingIndex = position
-            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
-
-            val currentCounter = counterList[position]
-            intent.putExtra("name", currentCounter.name)
-
-            intent.putExtra("dateTime", currentCounter.dateTime)
-
-            startActivityForResult(intent, ActivityRequest.EditListItem.value)
-        }
-    }
+//    inner class ItemClickListener : OnItemClickListener {
+//        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//            editingIndex = position
+//            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
+//
+//            val currentCounter = counterList[position]
+//            intent.putExtra("name", currentCounter.name)
+//
+//            intent.putExtra("dateTime", currentCounter.dateTime)
+//
+//            startActivityForResult(intent, ActivityRequest.EditListItem.value)
+//        }
+//    }
 
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
@@ -185,6 +215,14 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, ActivityRequest.CreateListItem.value)
         }
     }
+}
+
+class ListItemClickListener : DayCounterAdapter.OnItemClickListener {
+    override fun onItemClick(item: DayCounter) {
+        throw UnsupportedOperationException(
+                "not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }
 
 data class DayCounter(var name: String, var dateTime: DateTime)

@@ -11,7 +11,7 @@
         android:text="name text"
         android:textSize="18sp" />
     <TextView
-        android:id="@+id/time_text_view"
+        android:id="@+id/date_text_view"
         android:layout_height="0dp"
         android:layout_width="fill_parent"
         android:layout_weight="1"

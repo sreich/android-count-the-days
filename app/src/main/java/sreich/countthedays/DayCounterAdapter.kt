@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import org.joda.time.*
+import sreich.countthedays.DayCounterAdapter.DayViewHolder
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,80 +19,106 @@ import java.util.concurrent.TimeUnit
  * Created by sreich on 10/9/16.
  */
 
-class DayCounterAdapter(context: Context, val counterList: List<DayCounter>) : BaseAdapter() {
-    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//class ContentAdapter(private val items: List<ContentItem>, private val listener: ContentAdapter.OnItemClickListener) : RecyclerView.Adapter<ContentAdapter.ViewHolder>() {
+//
+//    interface OnItemClickListener {
+//        fun onItemClick(item: ContentItem)
+//    }
+//
+//    val itemCount: Int
+//        get() = items.size
+//
+//    internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+//
+//        private val name: TextView
+//        private val image: ImageView
+//
+//        init {
+//            name = itemView.findViewById(R.id.name) as TextView
+//            image = itemView.findViewById(R.id.image) as ImageView
+//        }
+//
+//        fun bind(item: ContentItem, listener: OnItemClickListener) {
+//            name.setText(item.name)
+//            Picasso.with(itemView.getContext()).load(item.imageUrl).into(image)
+//            itemView.setOnClickListener(object : View.OnClickListener() {
+//                fun onClick(v: View) {
+//                    listener.onItemClick(item)
+//                }
+//            })
+//        }
+//    }
+//}
+class DayCounterAdapter(context: Context,
+                        val counterList: MutableList<DayCounter>,
+                        private val listener: DayCounterAdapter.OnItemClickListener) : RecyclerView.Adapter<DayViewHolder>() {
+    interface OnItemClickListener {
+        fun onItemClick(item: DayCounter)
+    }
 
-    override fun getItem(position: Int) = counterList[position]
+//    override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
+
+//    }
+
+    override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
+        holder.bind(counterList[position], listener)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
+        val itemView = LayoutInflater.from(parent!!.context).inflate(R.layout.list_item_daycounter, parent, false)
+        return DayViewHolder(itemView)
+    }
+
+    override fun getItemCount() = counterList.size
+
+    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getItemId(position: Int) = position.toLong()
 
-    override fun getCount() = counterList.size
+    class DayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        var holder: DayViewHolder? = null
-        var view: View? = null
-        view = inflater.inflate(R.layout.list_item_daycounter, parent, false)
-//
-//        if (convertView == null) {
-//            convertView2 = inflater.inflate(R.layout.list_item_daycounter, parent, false)
-//
-//            val holder = DayViewHolder()
-//            holder.nameTextView = convertView2.findViewById(R.id.name_text_view) as TextView
-//            holder.dateTextView = convertView2.findViewById(R.id.time_text_view) as TextView
-//
-//            assert (holder != null)
-//            assert(convertView2 != null)
-//            convertView2.setTag(holder)
-//        } else {
-//            holder = convertView.tag as DayViewHolder
-//        }
-        holder = DayViewHolder()
+        var nameTextView: TextView = itemView.findViewById(R.id.name_text_view) as TextView
+        var dateTextView: TextView = itemView.findViewById(R.id.date_text_view) as TextView
 
-        holder.nameTextView = view.findViewById(R.id.name_text_view) as TextView
-        holder.dateTextView = view.findViewById(R.id.time_text_view) as TextView
-        val nameTextView = holder.nameTextView
+        fun bind(counter: DayCounter, listener: OnItemClickListener) {
+            nameTextView.text = counter.name
 
-        val dayCounter = getItem(position)
-        nameTextView.text = dayCounter.name
+            val dateTime = counter.dateTime
 
-        val dateTextView = holder.dateTextView
+            val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
 
-        val dateTime = dayCounter.dateTime
-
-        val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
-        val years = period.years
-        val months = period.months
-        val days = period.days
-
-        val yearsString = when {
-            years == 1 -> "$years year, "
-            years > 0 -> "$years years, "
-            else -> ""
+            dateTextView.text = dateViewText(period)
         }
 
-        val monthsString = when {
-            months == 1 -> "$months month, "
-            months > 0 -> "$months months, "
-            else -> ""
-        }
+        fun dateViewText(period: Period): String {
+            val years = period.years
+            val months = period.months
+            val days = period.days
 
-        val daysString = when {
-            days == 1 -> "$days day"
-            days > 0 -> "$days days"
-            else -> ""
-        }
-        val finalDateText = if (days == 0 && months == 0 && years == 0) {
-            "now"
-        } else {
-            "$yearsString$monthsString$daysString"
-        }
+            val yearsString = when {
+                years == 1 -> "$years year, "
+                years > 0 -> "$years years, "
+                else -> ""
+            }
 
-        dateTextView.text = finalDateText
-        return view
-    }
+            val monthsString = when {
+                months == 1 -> "$months month, "
+                months > 0 -> "$months months, "
+                else -> ""
+            }
 
-    private class DayViewHolder {
-        lateinit var nameTextView: TextView
-        lateinit var dateTextView: TextView
+            val daysString = when {
+                days == 1 -> "$days day"
+                days > 0 -> "$days days"
+                else -> ""
+            }
+            val finalDateText = if (days == 0 && months == 0 && years == 0) {
+                "now"
+            } else {
+                "$yearsString$monthsString$daysString"
+            }
+
+            return finalDateText
+        }
     }
 }
