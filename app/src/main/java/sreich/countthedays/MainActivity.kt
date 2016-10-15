@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapter: DayCounterAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
@@ -54,10 +55,15 @@ class MainActivity : AppCompatActivity() {
 
         val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
-        adapter = DayCounterAdapter(context = this, counterList = counterList, listener = ListItemClickListener())
+
+        listView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+
+        adapter = DayCounterAdapter(context = this, counterList = counterList)
         listView.adapter = adapter
         listView.layoutManager = LinearLayoutManager(applicationContext)
         listView.itemAnimator = DefaultItemAnimator()
+
+        listView.addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
     }
 
     /**
@@ -174,15 +180,26 @@ class MainActivity : AppCompatActivity() {
 
     inner class ListItemClickListener : DayCounterAdapter.OnItemClickListener {
         override fun onItemClick(counter: DayCounter) {
+
+        }
+    }
+
+    inner class ListClickListener : RecyclerTouchListener.ClickListener {
+        override fun onClick(view: View, position: Int) {
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
+            val counter = counterList[position]
 
             intent.putExtra("name", counter.name)
             intent.putExtra("dateTime", counter.dateTime)
 
             startActivityForResult(intent, ActivityRequest.EditListItem.value)
         }
-    }
-}
 
+        override fun onLongClick(view: View, position: Int) {
+        }
+    }
+
+
+}
 
 data class DayCounter(var name: String, var dateTime: DateTime)

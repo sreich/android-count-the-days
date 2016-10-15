@@ -19,14 +19,13 @@ import java.util.concurrent.TimeUnit
  * Created by sreich on 10/9/16.
  */
 class DayCounterAdapter(context: Context,
-                        val counterList: MutableList<DayCounter>,
-                        private val listener: DayCounterAdapter.OnItemClickListener) : RecyclerView.Adapter<DayViewHolder>() {
+                        val counterList: MutableList<DayCounter>) : RecyclerView.Adapter<DayViewHolder>() {
     interface OnItemClickListener {
         fun onItemClick(counter: DayCounter)
     }
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
-        holder.bind(counterList[position], listener)
+        holder.bind(counterList[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
@@ -43,7 +42,7 @@ class DayCounterAdapter(context: Context,
         var nameTextView: TextView = itemView.findViewById(R.id.name_text_view) as TextView
         var dateTextView: TextView = itemView.findViewById(R.id.date_text_view) as TextView
 
-        fun bind(counter: DayCounter, listener: OnItemClickListener) {
+        fun bind(counter: DayCounter) {
             nameTextView.text = counter.name
 
             val dateTime = counter.dateTime
@@ -52,11 +51,13 @@ class DayCounterAdapter(context: Context,
 
             dateTextView.text = dateViewText(period)
 
+            /*
             itemView.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View) {
                     listener.onItemClick(counter = counter)
                 }
             })
+            */
         }
 
         fun dateViewText(period: Period): String {
