@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+buildscript {
+    ext {
+        androidSupportVersion = "24.2.1"
+        gsonVersion = "2.7"
+        jodaTime = "2.9.4"
+        jodaTimeSerializers = "1.4.0"
+    }
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
@@ -30,16 +39,19 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.4.0'
+    compile "com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:$jodaTimeSerializers"
 
-    compile 'joda-time:joda-time:2.9.4'
-    compile 'com.google.code.gson:gson:2.7'
+    compile "joda-time:joda-time:$jodaTime"
+    compile "com.google.code.gson:gson:$gsonVersion"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:support-vector-drawable:24.2.1'
+
+    compile "com.android.support:appcompat-v7:$androidSupportVersion"
+    compile "com.android.support:recyclerview-v7:$androidSupportVersion"
+    compile "com.android.support:design:$androidSupportVersion"
+    compile "com.android.support:support-v4:$androidSupportVersion"
+    compile "com.android.support:support-vector-drawable:$androidSupportVersion"
+
     testCompile 'junit:junit:4.12'
 }
 repositories {
