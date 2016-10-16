@@ -47,7 +47,7 @@ class NewCounterActivity : AppCompatActivity() {
 
         val dateDialog = DatePickerDialog(this, OnDateSetListener { datePicker, year, month, day ->
             dateTime = datePicked(datePicker, year, month + 1, day)
-            dateButton.setText(formatDate(dateTime))
+            dateButton.text = formatDate(dateTime)
 
         }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth)
 

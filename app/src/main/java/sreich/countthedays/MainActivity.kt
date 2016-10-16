@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GestureDetectorCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -103,6 +104,48 @@ class MainActivity : AppCompatActivity() {
 
         if (v!!.id == R.id.listview) {
             menuInflater.inflate(R.menu.menu_list, menu)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.clear_all -> {
+                val builder = AlertDialog.Builder(this)
+
+                builder.setTitle("Confirm")
+                builder.setMessage("Are you sure?")
+
+                builder.setPositiveButton("YES", object : DialogInterface.OnClickListener {
+
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+
+                        counterList.clear()
+
+                        adapter.notifyDataSetChanged()
+
+                        dialog.dismiss()
+                    }
+                })
+
+                builder.setNegativeButton("NO", object : DialogInterface.OnClickListener {
+
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        dialog.dismiss()
+                    }
+                })
+
+                val alert = builder.create()
+                alert.show()
+
+                return true
+            }
+
+            else -> return super.onContextItemSelected(item)
         }
     }
 

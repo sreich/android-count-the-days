@@ -167,4 +167,5 @@
     <string name="title_activity_new_counter">Create a New Counter</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_reset">Reset</string>
+    <string name="menu_clear_all">Clear All</string>
 </resources>
