@@ -55,19 +55,19 @@ class DayCounterAdapter(context: Context,
 
             val yearsString = when {
                 years == 1 -> "$years year, "
-                years > 0 -> "$years years, "
+                years > 0 || years < 0 -> "$years years, "
                 else -> ""
             }
 
             val monthsString = when {
                 months == 1 -> "$months month, "
-                months > 0 -> "$months months, "
+                months > 0 || months < 0 -> "$months months, "
                 else -> ""
             }
 
             val daysString = when {
                 days == 1 -> "$days day"
-                days > 0 -> "$days days"
+                days > 0 || days < 0 -> "$days days"
                 else -> ""
             }
             val finalDateText = if (days == 0 && months == 0 && years == 0) {
