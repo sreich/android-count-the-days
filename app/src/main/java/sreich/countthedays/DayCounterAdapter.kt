@@ -20,10 +20,6 @@ import java.util.concurrent.TimeUnit
  */
 class DayCounterAdapter(context: Context,
                         val counterList: MutableList<DayCounter>) : RecyclerView.Adapter<DayViewHolder>() {
-    interface OnItemClickListener {
-        fun onItemClick(counter: DayCounter)
-    }
-
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind(counterList[position])
     }
@@ -50,14 +46,6 @@ class DayCounterAdapter(context: Context,
             val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
 
             dateTextView.text = dateViewText(period)
-
-            /*
-            itemView.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View) {
-                    listener.onItemClick(counter = counter)
-                }
-            })
-            */
         }
 
         fun dateViewText(period: Period): String {

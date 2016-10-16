@@ -129,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 val dateTime = data.getSerializableExtra("dateTime") as DateTime
                 counterToUpdate.name = name
                 counterToUpdate.dateTime = dateTime
+
                 adapter.notifyDataSetChanged()
             }
 
