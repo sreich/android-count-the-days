@@ -29,7 +29,7 @@ import java.util.*
 class NewCounterActivity : AppCompatActivity() {
 
     lateinit var newDateTime: DateTime
-    lateinit var dateText: EditText
+    lateinit var dateButton: Button
     lateinit var dateTime: DateTime
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,21 +47,16 @@ class NewCounterActivity : AppCompatActivity() {
 
         val dateDialog = DatePickerDialog(this, OnDateSetListener { datePicker, year, month, day ->
             dateTime = datePicked(datePicker, year, month + 1, day)
-            dateText.setText(formatDate(dateTime))
+            dateButton.setText(formatDate(dateTime))
 
         }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth)
 
-        dateText = (findViewById(R.id.dateText) as EditText).apply {
-            setOnFocusChangeListener { view, hasFocus ->
-                if (hasFocus) {
-                    dateDialog.show()
-                }
+        dateButton = (findViewById(R.id.dateButton) as Button).apply {
+            setOnClickListener {
+                dateDialog.show()
             }
 
-            inputType = InputType.TYPE_NULL
-            setText(formatDate(dateTime))
-            setTextIsSelectable(false)
-            keyListener = null
+            text = formatDate(dateTime)
         }
 
         val okButton = findViewById(R.id.ok) as Button
