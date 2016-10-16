@@ -47,8 +47,6 @@ class MainActivity : AppCompatActivity() {
 
         counterList = loadSave()
 
-        //debugLoadData()
-
         val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
 
@@ -63,17 +61,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * data for testing
+     * data for testing and first time startup
      */
-    private fun debugLoadData() {
+    private fun sampleData(): MutableList<DayCounter> {
         val now = DateTime.now()
 
-        //fixme off by one? not using last index in the view!!
-        val a = mutableListOf<Pair<String, DateTime>>().apply {
+        val list = mutableListOf<Pair<String, DateTime>>().apply {
             add(Pair("Since I brushed my teeth",
                      now.minusYears(0).minusMonths(0).minusDays(1).minusHours(0).minusMinutes(0)))
 
-            add(Pair("Since gave cat her pills",
+            add(Pair("Since I gave cat her pills",
                      now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0)))
 
             add(Pair("New phone arrives", now.minusYears(0).minusMonths(0).plusDays(24).minusHours(0).minusMinutes(0)))
@@ -88,9 +85,12 @@ class MainActivity : AppCompatActivity() {
                      now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52)))
         }
 
-        a.forEach { pair ->
-            counterList.add(DayCounter(name = pair.first, dateTime = pair.second))
+        val newCounterList = mutableListOf<DayCounter>()
+        list.forEach { pair ->
+            newCounterList.add(DayCounter(name = pair.first, dateTime = pair.second))
         }
+
+        return newCounterList
     }
 
     enum class ActivityRequest(val value: Int) {
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadSave(): MutableList<DayCounter> {
         val prefs = getPreferences(MODE_PRIVATE)
-        val json = prefs.getString("counter-list-json", null) ?: return mutableListOf()
+        val json = prefs.getString("counter-list-json", null) ?: return sampleData()
         //Log.d("daycounter", "loading: $json")
 
         val list = gson.fromJson<MutableList<DayCounter>>(json, object : TypeToken<MutableList<DayCounter>>() {}.type)
