@@ -11,7 +11,10 @@ import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
@@ -28,6 +31,7 @@ class NewCounterActivity : AppCompatActivity() {
     lateinit var newDateTime: DateTime
     lateinit var dateText: EditText
     lateinit var dateTime: DateTime
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +39,7 @@ class NewCounterActivity : AppCompatActivity() {
 
         val nameText = findViewById(R.id.nameText) as EditText
         nameText.setText(intent.getStringExtra("name"))
+        nameText.addTextChangedListener(TextChangedListener())
 
         // null along with other values if we're creating a new entry.
         // else it'll be the existing data that we're editing
@@ -74,6 +79,16 @@ class NewCounterActivity : AppCompatActivity() {
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
+    }
+
+    inner class TextChangedListener : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            val okButton = findViewById(R.id.ok) as Button
+            okButton.isEnabled = !(s.isNullOrEmpty())
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
     }
 
     private fun formatDate(dateTime: DateTime): String {
