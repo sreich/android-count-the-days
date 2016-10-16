@@ -18,7 +18,7 @@
             android:textStyle="bold"
             android:layout_weight="1"
             android:text="name text"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
     <TextView
             android:id="@+id/date_text_view"
@@ -26,5 +26,5 @@
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:text="time text"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 </LinearLayout>

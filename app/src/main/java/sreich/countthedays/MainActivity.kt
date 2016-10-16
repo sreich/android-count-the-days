@@ -28,13 +28,11 @@ import org.joda.time.DateTime
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-
     var counterList = mutableListOf<DayCounter>() //loadSave()
 
     var editingIndex = -1
 
-    lateinit var gson: Gson
-
+    val gson = Converters.registerDateTime(GsonBuilder()).create()!!
     lateinit var adapter: DayCounterAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +42,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        gson = Converters.registerDateTime(GsonBuilder()).create()
-
         val createNewFab = findViewById(R.id.fab) as FloatingActionButton
-        createNewFab.setOnClickListener(CreateNewClickListener())
+        createNewFab.setOnClickListener(FabCreateNewClickListener())
 
         counterList = loadSave()
 
@@ -102,18 +98,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+        val position = selectedItem
         when (item.itemId) {
             R.id.delete -> {
                 //delete this one
-                counterList.removeAt(info.position)
+                counterList.removeAt(position)
 
                 adapter.notifyDataSetChanged()
                 return true
             }
 
             R.id.reset -> {
-                val counter = counterList[info.position]
+                val counter = counterList[position]
                 counter.dateTime = DateTime.now()
 
                 adapter.notifyDataSetChanged()
@@ -171,16 +167,11 @@ class MainActivity : AppCompatActivity() {
         edit.apply()
     }
 
-    inner class CreateNewClickListener : View.OnClickListener {
+    var selectedItem = -1
+    inner class FabCreateNewClickListener : View.OnClickListener {
         override fun onClick(view: View) {
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
             startActivityForResult(intent, ActivityRequest.CreateListItem.value)
-        }
-    }
-
-    inner class ListItemClickListener : DayCounterAdapter.OnItemClickListener {
-        override fun onItemClick(counter: DayCounter) {
-
         }
     }
 
@@ -196,10 +187,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onLongClick(view: View, position: Int) {
+            selectedItem = position
+            openContextMenu(view)
         }
     }
-
-
 }
 
 data class DayCounter(var name: String, var dateTime: DateTime)
