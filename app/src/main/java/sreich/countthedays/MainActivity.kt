@@ -129,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 val dateTime = data.getSerializableExtra("dateTime") as DateTime
                 counterToUpdate.name = name
                 counterToUpdate.dateTime = dateTime
+                adapter.notifyDataSetChanged()
             }
 
             ActivityRequest.CreateListItem.value -> if (resultCode == RESULT_OK) {
@@ -168,6 +169,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     var selectedItem = -1
+
     inner class FabCreateNewClickListener : View.OnClickListener {
         override fun onClick(view: View) {
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
@@ -178,6 +180,7 @@ class MainActivity : AppCompatActivity() {
     inner class ListClickListener : RecyclerTouchListener.ClickListener {
         override fun onClick(view: View, position: Int) {
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
+            editingIndex = position
             val counter = counterList[position]
 
             intent.putExtra("name", counter.name)
