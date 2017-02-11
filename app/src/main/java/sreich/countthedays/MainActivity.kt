@@ -67,24 +67,24 @@ class MainActivity : AppCompatActivity() {
     private fun sampleData(): MutableList<DayCounter> {
         val now = DateTime.now()
 
-        val list = mutableListOf<Pair<String, DateTime>>().apply {
-            add(Pair("Since I brushed my teeth",
-                     now.minusYears(0).minusMonths(0).minusDays(1).minusHours(0).minusMinutes(0)))
-
-            add(Pair("Since I gave cat her pills",
-                     now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0)))
-
-            add(Pair("New phone arrives", now.minusYears(0).minusMonths(0).plusDays(24).minusHours(0).minusMinutes(0)))
-
-            add(Pair("Water filter changed",
-                     now.minusYears(0).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)))
-
-            add(Pair("Car bought", now.minusYears(1).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)))
-            add(Pair("New TV bought", now.minusYears(0).minusMonths(3).minusDays(24).minusHours(0).minusMinutes(0)))
-            add(Pair("Sofa arrived", now.minusYears(1).minusMonths(3).minusDays(10).minusHours(0).minusMinutes(0)))
-            add(Pair("Renewed subscription",
-                     now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52)))
-        }
+        val list = mutableListOf(
+                Pair("Since I brushed my teeth",
+                     now.minusYears(0).minusMonths(0).minusDays(1).minusHours(0).minusMinutes(0)),
+                Pair("Since I gave cat her pills",
+                     now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0)),
+                Pair("New phone arrives",
+                     now.minusYears(0).minusMonths(0).plusDays(24).minusHours(0).minusMinutes(0)),
+                Pair("Water filter changed",
+                     now.minusYears(0).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)),
+                Pair("Car bought",
+                     now.minusYears(1).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)),
+                Pair("New TV bought",
+                     now.minusYears(0).minusMonths(3).minusDays(24).minusHours(0).minusMinutes(0)),
+                Pair("Sofa arrived",
+                     now.minusYears(1).minusMonths(3).minusDays(10).minusHours(0).minusMinutes(0)),
+                Pair("Renewed subscription",
+                     now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52))
+                                )
 
         val newCounterList = mutableListOf<DayCounter>()
         list.forEach { pair ->
