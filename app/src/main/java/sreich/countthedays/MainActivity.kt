@@ -137,6 +137,14 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.settings -> {
+
+                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                startActivity(intent)
+
+                true
+            }
+
             else -> super.onContextItemSelected(item)
         }
     }
