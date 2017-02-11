@@ -19,6 +19,7 @@ import android.preference.PreferenceManager
 import android.preference.RingtonePreference
 import android.text.TextUtils
 import android.view.MenuItem
+import android.widget.Toast
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -112,7 +113,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"))
+            //bindPreferenceSummaryToValue(findPreference("sync_frequency"))
+            val preference = findPreference(getString(R.string.exportBackup))
+            preference.setOnPreferenceClickListener {
+                Toast.makeText(this.activity.applicationContext, "export toast", 5000).show()
+                true
+            }
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -121,6 +127,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 startActivity(Intent(activity, SettingsActivity::class.java))
                 return true
             }
+
+
             return super.onOptionsItemSelected(item)
         }
     }

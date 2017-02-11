@@ -1,21 +1,33 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <ListPreference
-        android:defaultValue="180"
-        android:entries="@array/pref_sync_frequency_titles"
-        android:entryValues="@array/pref_sync_frequency_values"
-        android:key="sync_frequency"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_sync_frequency" />
+    <!--<ListPreference-->
+    <!--android:defaultValue="180"-->
+    <!--android:entries="@array/pref_sync_frequency_titles"-->
+    <!--android:entryValues="@array/pref_sync_frequency_values"-->
+    <!--android:key="sync_frequency"-->
+    <!--android:negativeButtonText="@null"-->
+    <!--android:positiveButtonText="@null"-->
+    <!--android:title="@string/pref_title_sync_frequency" />-->
 
     <!-- This preference simply launches an intent when selected. Use this UI sparingly, per
          design guidelines. -->
-    <Preference android:title="@string/pref_title_system_sync_settings">
-        <intent android:action="android.settings.SYNC_SETTINGS" />
-    </Preference>
+    <!--<Preference android:title="@string/pref_title_system_sync_settings">-->
+    <!--<intent android:action="android.settings.SYNC_SETTINGS" />-->
+    <!--</Preference>-->
 
+    <Preference
+            android:title="Import Local Backup"
+            android:key="@string/importBackup"
+            android:summary="Import a previous backup from this device's local storage"/>
+
+    <Preference
+            android:title="Export Local Backup"
+            android:key="@string/exportBackup"
+            android:summary="Export a backup of all app data to this device's local storage"/>
+    <!--<Preference-->
+            <!--android:title="Share Backup"-->
+            <!--android:key="@string/importBackup"-->
+            <!--android:icon="@android:drawable/ic_menu_share"-->
+            <!--android:summary="Export a backup of all app data"/>-->
 </PreferenceScreen>
