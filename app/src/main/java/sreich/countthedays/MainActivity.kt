@@ -68,11 +68,11 @@ class MainActivity : AppCompatActivity() {
         val now = DateTime.now()
 
         val list = mutableListOf(
-                Pair("Since I brushed my teeth",
+                Pair("New fridge bought",
                      now.minusYears(0).minusMonths(0).minusDays(1).minusHours(0).minusMinutes(0)),
                 Pair("Since I gave cat her pills",
                      now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0)),
-                Pair("New phone arrives",
+                Pair("New phone bought",
                      now.minusYears(0).minusMonths(0).plusDays(24).minusHours(0).minusMinutes(0)),
                 Pair("Water filter changed",
                      now.minusYears(0).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)),
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                      now.minusYears(0).minusMonths(3).minusDays(24).minusHours(0).minusMinutes(0)),
                 Pair("Sofa arrived",
                      now.minusYears(1).minusMonths(3).minusDays(10).minusHours(0).minusMinutes(0)),
-                Pair("Renewed subscription",
+                Pair("Renewed magazine subscription",
                      now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52))
                                 )
 
