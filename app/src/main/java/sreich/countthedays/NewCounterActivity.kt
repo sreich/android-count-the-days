@@ -79,7 +79,7 @@ class NewCounterActivity : AppCompatActivity() {
     inner class TextChangedListener : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             val okButton = findViewById(R.id.ok) as Button
-            okButton.isEnabled = !(s.isNullOrEmpty())
+            okButton.isEnabled = !s.isNullOrEmpty()
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit

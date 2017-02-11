@@ -120,24 +120,15 @@ class MainActivity : AppCompatActivity() {
                 builder.setTitle("Confirm")
                 builder.setMessage("Are you sure?")
 
-                builder.setPositiveButton("YES", object : DialogInterface.OnClickListener {
+                builder.setPositiveButton("YES") { dialog, _ ->
+                    counterList.clear()
 
-                    override fun onClick(dialog: DialogInterface, which: Int) {
+                    adapter.notifyDataSetChanged()
 
-                        counterList.clear()
+                    dialog.dismiss()
+                }
 
-                        adapter.notifyDataSetChanged()
-
-                        dialog.dismiss()
-                    }
-                })
-
-                builder.setNegativeButton("NO", object : DialogInterface.OnClickListener {
-
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        dialog.dismiss()
-                    }
-                })
+                builder.setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
 
                 val alert = builder.create()
                 alert.show()
