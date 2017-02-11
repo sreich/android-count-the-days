@@ -68,31 +68,32 @@ class MainActivity : AppCompatActivity() {
         val now = DateTime.now()
 
         val list = mutableListOf(
-                Pair("New fridge bought",
+                Pair(i18n(R.string.sampleData1),
                      now.minusYears(0).minusMonths(0).minusDays(1).minusHours(0).minusMinutes(0)),
-                Pair("Since I gave cat her pills",
+                Pair(i18n(R.string.sampleData2),
                      now.minusYears(0).minusMonths(0).minusDays(24).minusHours(0).minusMinutes(0)),
-                Pair("New phone bought",
+                Pair(i18n(R.string.sampleData3),
                      now.minusYears(0).minusMonths(0).plusDays(24).minusHours(0).minusMinutes(0)),
-                Pair("Water filter changed",
+                Pair(i18n(R.string.sampleData4),
                      now.minusYears(0).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)),
-                Pair("Car bought",
+                Pair(i18n(R.string.sampleData5),
                      now.minusYears(1).minusMonths(3).minusDays(0).minusHours(0).minusMinutes(0)),
-                Pair("New TV bought",
+                Pair(i18n(R.string.sampleData6),
                      now.minusYears(0).minusMonths(3).minusDays(24).minusHours(0).minusMinutes(0)),
-                Pair("Sofa arrived",
+                Pair(i18n(R.string.sampleData7),
                      now.minusYears(1).minusMonths(3).minusDays(10).minusHours(0).minusMinutes(0)),
-                Pair("Renewed magazine subscription",
-                     now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52))
-                                )
+                Pair(i18n(R.string.sampleData8),
+                     now.minusYears(1).minusMonths(3).minusDays(10).minusHours(10).minusMinutes(52)))
 
         val newCounterList = mutableListOf<DayCounter>()
-        list.forEach { pair ->
-            newCounterList.add(DayCounter(name = pair.first, dateTime = pair.second))
+        list.forEach { (first, second) ->
+            newCounterList.add(DayCounter(name = first, dateTime = second))
         }
 
         return newCounterList
     }
+
+    fun i18n(resourceId: Int): String = getString(resourceId)
 
     enum class ActivityRequest(val value: Int) {
         EditListItem(0),
@@ -113,14 +114,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        return when (item!!.itemId) {
             R.id.clear_all -> {
                 val builder = AlertDialog.Builder(this)
 
-                builder.setTitle("Confirm")
-                builder.setMessage("Are you sure?")
+                builder.setTitle(i18n(R.string.confirmDialogTitle))
+                builder.setMessage(i18n(R.string.confirmDialogPrompt))
 
-                builder.setPositiveButton("YES") { dialog, _ ->
+                builder.setPositiveButton(i18n(R.string.confirmDialogYes)) { dialog, _ ->
                     counterList.clear()
 
                     adapter.notifyDataSetChanged()
@@ -128,15 +129,15 @@ class MainActivity : AppCompatActivity() {
                     dialog.dismiss()
                 }
 
-                builder.setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
+                builder.setNegativeButton(i18n(R.string.confirmDialogNo)) { dialog, _ -> dialog.dismiss() }
 
                 val alert = builder.create()
                 alert.show()
 
-                return true
+                true
             }
 
-            else -> return super.onContextItemSelected(item)
+            else -> super.onContextItemSelected(item)
         }
     }
 

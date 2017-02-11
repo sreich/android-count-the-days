@@ -168,4 +168,16 @@
     <string name="menu_delete">Delete</string>
     <string name="menu_reset">Reset</string>
     <string name="menu_clear_all">Clear All</string>
+    <string name="sampleData1">New fridge bought</string>
+    <string name="sampleData2">Since I gave cat her pills</string>
+    <string name="sampleData3">New phone bought</string>
+    <string name="sampleData4">Water filter changed</string>
+    <string name="sampleData5">Car bought</string>
+    <string name="sampleData6">New TV bought</string>
+    <string name="sampleData7">Sofa arrived</string>
+    <string name="sampleData8">Renewed magazine subscription</string>
+    <string name="confirmDialogTitle">Confirm</string>
+    <string name="confirmDialogPrompt">Are you sure?</string>
+    <string name="confirmDialogYes">YES</string>
+    <string name="confirmDialogNo">NO</string>
 </resources>

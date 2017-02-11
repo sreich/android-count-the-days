@@ -46,8 +46,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         val left = parent.paddingLeft
         val right = parent.width - parent.paddingRight
 
-        val childCount = parent.childCount
-        for (i in 0 until childCount) {
+        for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
 
             val params = child.layoutParams as RecyclerView.LayoutParams
@@ -63,8 +62,7 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         val top = parent.paddingTop
         val bottom = parent.height - parent.paddingBottom
 
-        val childCount = parent.childCount
-        for (i in 0 until childCount) {
+        for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
 
             val params = child.layoutParams as RecyclerView.LayoutParams
