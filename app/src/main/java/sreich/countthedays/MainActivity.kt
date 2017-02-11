@@ -151,13 +151,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val position = selectedItem
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.delete -> {
                 //delete this one
                 counterList.removeAt(position)
 
                 adapter.notifyDataSetChanged()
-                return true
+                true
             }
 
             R.id.reset -> {
@@ -165,10 +165,10 @@ class MainActivity : AppCompatActivity() {
                 counter.dateTime = DateTime.now()
 
                 adapter.notifyDataSetChanged()
-                return true
+                true
             }
 
-            else -> return super.onContextItemSelected(item)
+            else -> super.onContextItemSelected(item)
         }
     }
 
