@@ -17,14 +17,14 @@
     <!--</Preference>-->
 
     <Preference
-            android:title="Import Local Backup"
+            android:title="Import Backup From..."
             android:key="@string/importBackup"
-            android:summary="Import a previous backup from this device's local storage"/>
+            android:summary="Import a previous backup from various sources"/>
 
     <Preference
-            android:title="Export Local Backup"
+            android:title="Export Backup To..."
             android:key="@string/exportBackup"
-            android:summary="Export a backup of all app data to this device's local storage"/>
+            android:summary="Export a new backup of all app data to a place of your choosing"/>
     <!--<Preference-->
             <!--android:title="Share Backup"-->
             <!--android:key="@string/importBackup"-->

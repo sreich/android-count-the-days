@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import org.joda.time.DateTime
+import java.io.File
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -59,7 +60,32 @@ class MainActivity : AppCompatActivity() {
         listView.itemAnimator = DefaultItemAnimator()
 
         listView.addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
+
+        val defprefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+//        val edit = defprefs.edit().ly {  }
+        //               edit.finish(edit.apply()).putBoolean("testSHIT", true)
+        val b = 2
+
     }
+
+//
+//    public inline fun <T : Any?, R> T.finish(block: (T) -> R, finalizer: (T) -> R): R {
+//        var closed = false
+//        try {
+//            return block(this)
+//        } catch (e: Exception) {
+//            closed = true
+//            try {
+//                this?.close()
+//            } catch (closeException: Exception) {
+//            }
+//            throw e
+//        } finally {
+//            if (!closed) {
+//                this?.close()
+//            }
+//        }
+//    }
 
     /**
      * data for testing and first time startup
@@ -93,7 +119,6 @@ class MainActivity : AppCompatActivity() {
         return newCounterList
     }
 
-    fun i18n(resourceId: Int): String = getString(resourceId)
 
     enum class ActivityRequest(val value: Int) {
         EditListItem(0),
@@ -183,6 +208,8 @@ class MainActivity : AppCompatActivity() {
                 counterToUpdate.dateTime = dateTime
 
                 adapter.notifyDataSetChanged()
+
+                saveChanges()
             }
 
             ActivityRequest.CreateListItem.value -> if (resultCode == RESULT_OK) {
@@ -248,5 +275,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
 
 data class DayCounter(var name: String, var dateTime: DateTime)

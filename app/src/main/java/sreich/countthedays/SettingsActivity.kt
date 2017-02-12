@@ -23,6 +23,7 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.Toast
 import java.io.File
+import java.io.ObjectOutputStream
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -40,6 +41,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupActionBar()
+
+        val defprefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val a = defprefs.all
     }
 
     /**
@@ -50,17 +54,10 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    /**
-     * {@inheritDoc}
-     */
     override fun onIsMultiPane(): Boolean {
         return isXLargeTablet(this)
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
         loadHeadersFromResource(R.xml.pref_headers, target)
     }
@@ -69,11 +66,10 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
-    override fun isValidFragment(fragmentName: String): Boolean {
-        return PreferenceFragment::class.java.name == fragmentName
-                || GeneralPreferenceFragment::class.java.name == fragmentName
-                || DataSyncPreferenceFragment::class.java.name == fragmentName
-    }
+    override fun isValidFragment(fragmentName: String): Boolean
+            = PreferenceFragment::class.java.name == fragmentName
+            || GeneralPreferenceFragment::class.java.name == fragmentName
+            || DataSyncPreferenceFragment::class.java.name == fragmentName
 
     /**
      * This fragment shows general preferences only. It is used when the
@@ -120,36 +116,50 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val importBackupPref = findPreference(getString(R.string.importBackup))
             importBackupPref.setOnPreferenceClickListener {
-                Toast.makeText(this.activity.applicationContext, "import toast", 5000).show()
+                importBackupIntent()
                 true
             }
 
             val context = activity.applicationContext
             val exportBackupPref = findPreference(getString(R.string.exportBackup))
             exportBackupPref.setOnPreferenceClickListener {
-                Toast.makeText(this.activity.applicationContext, "export toast", 5000).show()
-
-                // getExternalFilesDir() + "/Pictures" should match the declaration in fileprovider.xml paths
-
-                val file = File(context.filesDir, "share_image_" + System.currentTimeMillis() + ".backup")
-                file.writeText("blah")
-
-            // wrap File object into a content provider
-                val fileUri = FileProvider.getUriForFile(this.activity.applicationContext,
-                                                         "sreich.countthedays.fileprovider", file)
-
-
-                val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
-                sharingIntent.type = "text/plain"
-                //sharingIntent.type = "*/*"
-                val shareBodyText = "Check it out. Your message goes here"
-                sharingIntent.putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
-
-                startActivity(Intent.createChooser(sharingIntent, "Shearing Option"))
-
+                exportBackupIntent()
                 true
             }
 
+        }
+
+        private fun importBackupIntent() {
+            //Toast.makeText(this.activity.applicationContext, "import toast", 5000).show()
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        private fun exportBackupIntent() {
+            //Toast.makeText(this.activity.applicationContext, "export toast", 5000).show()
+
+            val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+            sharingIntent.type = "text/plain"
+            //sharingIntent.type = "*/*"
+            val fileUri = saveBackup()
+            sharingIntent.putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
+
+            startActivity(Intent.createChooser(sharingIntent, "Share backup to..."))
+        }
+
+        private fun saveBackup(): Uri {
+            val fileName = "Count The Days-${System.currentTimeMillis()}.backup"
+            val file = File(this.activity.applicationContext.filesDir, fileName)
+            ObjectOutputStream(file.outputStream()).use { it ->
+
+                val prefs = preferenceManager.sharedPreferences
+                it.writeObject(prefs.all)
+            }
+
+            // wrap File object into a content provider
+            val fileUri = FileProvider.getUriForFile(this.activity.applicationContext,
+                                                     "sreich.countthedays.fileprovider", file)
+
+            return fileUri
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
