@@ -10,6 +10,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.preference.ListPreference
 import android.preference.Preference
 import android.preference.PreferenceActivity
@@ -17,9 +18,11 @@ import android.support.v7.app.ActionBar
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.preference.RingtonePreference
+import android.support.v4.content.FileProvider
 import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.Toast
+import java.io.File
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -114,11 +117,39 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             //bindPreferenceSummaryToValue(findPreference("sync_frequency"))
-            val preference = findPreference(getString(R.string.exportBackup))
-            preference.setOnPreferenceClickListener {
-                Toast.makeText(this.activity.applicationContext, "export toast", 5000).show()
+
+            val importBackupPref = findPreference(getString(R.string.importBackup))
+            importBackupPref.setOnPreferenceClickListener {
+                Toast.makeText(this.activity.applicationContext, "import toast", 5000).show()
                 true
             }
+
+            val context = activity.applicationContext
+            val exportBackupPref = findPreference(getString(R.string.exportBackup))
+            exportBackupPref.setOnPreferenceClickListener {
+                Toast.makeText(this.activity.applicationContext, "export toast", 5000).show()
+
+                // getExternalFilesDir() + "/Pictures" should match the declaration in fileprovider.xml paths
+
+                val file = File(context.filesDir, "share_image_" + System.currentTimeMillis() + ".backup")
+                file.writeText("blah")
+
+            // wrap File object into a content provider
+                val fileUri = FileProvider.getUriForFile(this.activity.applicationContext,
+                                                         "sreich.countthedays.fileprovider", file)
+
+
+                val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+                sharingIntent.type = "text/plain"
+                //sharingIntent.type = "*/*"
+                val shareBodyText = "Check it out. Your message goes here"
+                sharingIntent.putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
+
+                startActivity(Intent.createChooser(sharingIntent, "Shearing Option"))
+
+                true
+            }
+
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
