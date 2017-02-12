@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.fatboyindustrial.gsonjodatime.Converters
+import com.github.salomonbrys.kotson.fromJson
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -62,8 +63,6 @@ class MainActivity : AppCompatActivity() {
         listView.addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
 
         val defprefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-//        val edit = defprefs.edit().ly {  }
-        //               edit.finish(edit.apply()).putBoolean("testSHIT", true)
         val b = 2
 
     }
@@ -231,7 +230,7 @@ class MainActivity : AppCompatActivity() {
         val json = prefs.getString("counter-list-json", null) ?: return sampleData()
         //Log.d("daycounter", "loading: $json")
 
-        val list = gson.fromJson<MutableList<DayCounter>>(json, object : TypeToken<MutableList<DayCounter>>() {}.type)
+        val list = gson.fromJson<MutableList<DayCounter>>(json)
 
         return list
     }
