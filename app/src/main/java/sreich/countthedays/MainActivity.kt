@@ -22,20 +22,58 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.fatboyindustrial.gsonjodatime.Converters
-import com.github.salomonbrys.kotson.fromJson
+import com.github.salomonbrys.kotson.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.internal.Streams.write
 import com.google.gson.reflect.TypeToken
 import org.joda.time.DateTime
+import org.joda.time.LocalDate
 import java.io.File
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    var counterList = mutableListOf<DayCounter>() //loadSave()
+    var counterList = mutableListOf<DayCounter>() //loadSavedData()
 
     var editingIndex = -1
 
-    val gson = Converters.registerDateTime(GsonBuilder()).create()!!
+    val deprecatedGson = Converters.registerDateTime(GsonBuilder()).create()!!
+    val gson = GsonBuilder()/*.registerTypeAdapter<DateTime> {
+
+        write {
+            beginArray()
+            value(it.toString())
+            endArray()
+        }
+        //deserialize { it.json. }
+
+        read {
+            beginArray()
+            val dateTime = nextString()
+            endArray()
+
+            DateTime.parse(dateTime)
+        }
+    }*/.registerTypeAdapter<DayCounter> {
+        write {
+            beginArray()
+            value(it.name)
+            value(it.dateTime.toString())
+            endArray()
+        }
+
+        read {
+            beginArray()
+            val name = nextString()
+            val dateTime = nextString()
+            endArray()
+
+            DayCounter(name = name, dateTime = DateTime(dateTime))
+        }
+    }
+            .create()
+
     lateinit var adapter: DayCounterAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         val createNewFab = findViewById(R.id.fab) as FloatingActionButton
         createNewFab.setOnClickListener(FabCreateNewClickListener())
 
-        counterList = loadSave()
+        counterList = loadSavedData()
 
         val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
@@ -61,30 +99,7 @@ class MainActivity : AppCompatActivity() {
         listView.itemAnimator = DefaultItemAnimator()
 
         listView.addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
-
-        val defprefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val b = 2
-
     }
-
-//
-//    public inline fun <T : Any?, R> T.finish(block: (T) -> R, finalizer: (T) -> R): R {
-//        var closed = false
-//        try {
-//            return block(this)
-//        } catch (e: Exception) {
-//            closed = true
-//            try {
-//                this?.close()
-//            } catch (closeException: Exception) {
-//            }
-//            throw e
-//        } finally {
-//            if (!closed) {
-//                this?.close()
-//            }
-//        }
-//    }
 
     /**
      * data for testing and first time startup
@@ -117,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
         return newCounterList
     }
-
 
     enum class ActivityRequest(val value: Int) {
         EditListItem(0),
@@ -201,10 +215,12 @@ class MainActivity : AppCompatActivity() {
             ActivityRequest.EditListItem.value -> if (resultCode == RESULT_OK) {
                 val counterToUpdate = counterList[editingIndex]
 
-                val name = data!!.getStringExtra("name")
-                val dateTime = data.getSerializableExtra("dateTime") as DateTime
-                counterToUpdate.name = name
-                counterToUpdate.dateTime = dateTime
+                val newName = data!!.getStringExtra("name")
+                val newDateTime = data.getSerializableExtra("dateTime") as DateTime
+                counterToUpdate.apply {
+                    name = newName
+                    dateTime = newDateTime
+                }
 
                 adapter.notifyDataSetChanged()
 
@@ -225,12 +241,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadSave(): MutableList<DayCounter> {
+    private val saveFileVersion: String = "1.0"
+
+    private fun loadSavedData(): MutableList<DayCounter> {
         val prefs = getPreferences(MODE_PRIVATE)
         val json = prefs.getString("counter-list-json", null) ?: return sampleData()
         //Log.d("daycounter", "loading: $json")
 
-        val list = gson.fromJson<MutableList<DayCounter>>(json)
+        val list = deprecatedGson.fromJson<MutableList<DayCounter>>(json)
+
+        val counterListJson = gson.toJson(sampleData())
+        val settingsJson: JsonObject = jsonObject(
+                "formatVersion" to saveFileVersion,
+                "counters" to counterListJson)
 
         return list
     }
@@ -240,6 +263,7 @@ class MainActivity : AppCompatActivity() {
         val edit = prefs.edit()
 
         val json = gson.toJson(counterList)
+
 
         edit.putString("counter-list-json", json)
         //Log.d("daycounter", "saving: $json")
