@@ -3,6 +3,7 @@ package sreich.countthedays
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.FloatingActionButton
@@ -26,6 +27,7 @@ import com.github.salomonbrys.kotson.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.google.gson.internal.Streams.write
 import com.google.gson.reflect.TypeToken
 import org.joda.time.DateTime
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         val createNewFab = findViewById(R.id.fab) as FloatingActionButton
         createNewFab.setOnClickListener(FabCreateNewClickListener())
 
-        loadSavedData()
+        loadSettingsData()
 
         val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
@@ -223,7 +225,7 @@ class MainActivity : AppCompatActivity() {
 
                 adapter.notifyDataSetChanged()
 
-                saveChanges()
+                saveSettingsJson()
             }
 
             ActivityRequest.CreateListItem.value -> if (resultCode == RESULT_OK) {
@@ -235,27 +237,32 @@ class MainActivity : AppCompatActivity() {
 
                 counterList.add(newCounter)
 
-                saveChanges()
+                saveSettingsJson()
             }
         }
     }
 
+    /**
+     * 1.0 - not in json file, but in shared preferences (bad decision)
+     * 1.1 - first time it is in json settings file, everything stored here
+     */
     private val saveFileVersion: String = "1.1"
 
     val settingsSaveLocation by lazy { applicationContext.filesDir!! }
-    val settingsSaveFileName = "count-the-days-settings"
-    fun writeSettingsJson() {
 
-        //fixme hack
-        counterList = sampleData()
+    object Settings {
+        val settingsSaveFileName = "count-the-days-settings"
+        val settingsSaveFileExtension = ".json"
+    }
 
+    val file = File(settingsSaveLocation, "${Settings.settingsSaveFileName}${Settings.settingsSaveFileExtension}")
+
+    fun saveSettingsJson() {
         val counterListJson = gson.toJsonTree(counterList)
 
         val settingsJson: JsonObject = jsonObject(
-                "formatVersion" to saveFileVersion,
+                "saveVersion" to saveFileVersion,
                 "counters" to counterListJson)
-
-        val file = File(settingsSaveLocation, "$settingsSaveFileName.json")
         file.writeText(settingsJson.toString())
     }
 
@@ -263,18 +270,38 @@ class MainActivity : AppCompatActivity() {
      * either loads the saved data, or fills it with sample data
      * if it's all empty
      */
-    private fun loadSavedData() {
+    private fun loadSettingsData() {
+        //we do not yet ever clear sharedprefs..it's our backup for now, in
+        //case a rollout screws things up
+        //todo in the future, delete this..maybe after a few versions
+        // once we know we're in the claer
         val prefs = getPreferences(MODE_PRIVATE)
-
-        writeSettingsJson()
-
         val deprecatedJson = prefs.getString("counter-list-json", null)
 
         //conversion from 1.0 data format when we stored it in sharedprefs
-        //so convert it to json and clear it
-        if (deprecatedJson != null) {
-            upgradeSaveDataFrom1_0(deprecatedJson)
+        //so convert it to json and clear it, write save file to json
+        if (deprecatedJson != null && !file.exists()) {
+            //we only perform the 1.0 -> 1.1 upgrade if the json output doesn't exist
+            // (so it only runs once)
+            //since shared prefs is migrated from after this first run, and kept until we
+            //decide to (versions later), delete them safely.
+            upgradeSaveDataFrom1_0(deprecatedJson, prefs)
         }
+
+        loadSettingsJson()
+    }
+
+    private fun loadSettingsJson() {
+        val fileText = file.readText()
+
+        val fileJsonElement = JsonParser().parse(fileText)
+
+        val versionString = fileJsonElement["saveVersion"].asString
+
+        val counterJson = fileJsonElement["counters"]
+        val loadedCounterList = gson.fromJson<MutableList<DayCounter>>(counterJson)
+
+        counterList = loadedCounterList
     }
 
     /**
@@ -287,23 +314,19 @@ class MainActivity : AppCompatActivity() {
      * to/from file, so why not just store config as json file directly and reuse
      * the code?
      *
-     * plus to output sharedprefs to a json file that'd probably be pretty horrible
+     * plus to import/export sharedprefs to a json file that'd probably be pretty horrible
      */
-    private fun upgradeSaveDataFrom1_0(deprecatedJson: String) {
+    private fun upgradeSaveDataFrom1_0(deprecatedJson: String, prefs: SharedPreferences) {
         counterList = deprecatedGson.fromJson<MutableList<DayCounter>>(deprecatedJson)
-    }
 
-    private fun saveChanges() {
-        val prefs = getPreferences(MODE_PRIVATE)
-        val edit = prefs.edit()
+        //clear out sharedpreferences, we're likely never using this again.
+        //fixme for now import each and every time, TEMPORARY ONLY FOR ME
+//        val edit = prefs.edit()
+        //       edit.clear()
+        //      edit.apply()
 
-        val json = gson.toJson(counterList)
-
-
-        edit.putString("counter-list-json", json)
-        //Log.d("daycounter", "saving: $json")
-
-        edit.apply()
+        //write current settings to new save file
+        saveSettingsJson()
     }
 
     var selectedItem = -1

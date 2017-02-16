@@ -120,7 +120,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 true
             }
 
-            val context = activity.applicationContext
             val exportBackupPref = findPreference(getString(R.string.exportBackup))
             exportBackupPref.setOnPreferenceClickListener {
                 exportBackupIntent()
@@ -148,16 +147,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         private fun saveBackup(): Uri {
             val fileName = "Count The Days-${System.currentTimeMillis()}.backup"
-            val file = File(this.activity.applicationContext.filesDir, fileName)
-            ObjectOutputStream(file.outputStream()).use { it ->
+            val backupFile = File(this.activity.applicationContext.filesDir, fileName)
 
-                val prefs = preferenceManager.sharedPreferences
-                it.writeObject(prefs.all)
-            }
+            File(this.activity.applicationContext.filesDir,
+                 MainActivity.Settings.settingsSaveFileName +
+                         MainActivity.Settings.settingsSaveFileExtension).copyTo(backupFile)
 
             // wrap File object into a content provider
             val fileUri = FileProvider.getUriForFile(this.activity.applicationContext,
-                                                     "sreich.countthedays.fileprovider", file)
+                                                     "sreich.countthedays.fileprovider", backupFile)
 
             return fileUri
         }
