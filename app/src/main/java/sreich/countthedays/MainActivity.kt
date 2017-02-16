@@ -251,11 +251,11 @@ class MainActivity : AppCompatActivity() {
     val settingsSaveLocation by lazy { applicationContext.filesDir!! }
 
     object Settings {
-        val settingsSaveFileName = "count-the-days-settings"
-        val settingsSaveFileExtension = ".json"
+        val settingsFileName = "count-the-days-settings"
+        val settingsFileExtension = ".json"
     }
 
-    val file = File(settingsSaveLocation, "${Settings.settingsSaveFileName}${Settings.settingsSaveFileExtension}")
+    val file = File(settingsSaveLocation, "${Settings.settingsFileName}${Settings.settingsFileExtension}")
 
     fun saveSettingsJson() {
         val counterListJson = gson.toJsonTree(counterList)

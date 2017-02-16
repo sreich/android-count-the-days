@@ -103,6 +103,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * activity is showing a two-pane settings UI.
      */
     class DataSyncPreferenceFragment : PreferenceFragment() {
+        val appContext by lazy { this.activity.applicationContext!! }
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_data_sync)
@@ -147,15 +149,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         private fun saveBackup(): Uri {
             val fileName = "Count The Days-${System.currentTimeMillis()}.backup"
-            val backupFile = File(this.activity.applicationContext.filesDir, fileName)
+            val backupFile = File(appContext.filesDir, fileName)
 
-            File(this.activity.applicationContext.filesDir,
-                 MainActivity.Settings.settingsSaveFileName +
-                         MainActivity.Settings.settingsSaveFileExtension).copyTo(backupFile)
+            File(appContext.filesDir, MainActivity.Settings.settingsFileName +
+                    MainActivity.Settings.settingsFileExtension).copyTo(backupFile)
 
             // wrap File object into a content provider
-            val fileUri = FileProvider.getUriForFile(this.activity.applicationContext,
-                                                     "sreich.countthedays.fileprovider", backupFile)
+            val fileUri = FileProvider.getUriForFile(appContext, "sreich.countthedays.fileprovider", backupFile)
 
             return fileUri
         }
