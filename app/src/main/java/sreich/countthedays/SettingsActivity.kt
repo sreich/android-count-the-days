@@ -22,6 +22,8 @@ import android.support.v4.content.FileProvider
 import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.Toast
+import com.github.debop.kodatimes.now
+import com.github.debop.kodatimes.toIsoFormatHMSString
 import java.io.File
 import java.io.ObjectOutputStream
 
@@ -130,14 +132,38 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         }
 
+        private val REQUEST_BACKUP_IMPORT = 1
+
         private fun importBackupIntent() {
             //Toast.makeText(this.activity.applicationContext, "import toast", 5000).show()
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "text/plain"
+                addCategory(Intent.CATEGORY_OPENABLE)
+            }
+
+            // Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
+            startActivityForResult(intent, REQUEST_BACKUP_IMPORT)
+        }
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            if (resultCode != RESULT_OK) {
+                return
+            }
+
+            when (requestCode) {
+                REQUEST_BACKUP_IMPORT -> {
+                    importBackup(uri=data!!.dataString)
+                }
+            }
+        }
+
+        private fun importBackup(uri: String) {
+            val file = File(uri)
+            file.readText()
         }
 
         private fun exportBackupIntent() {
-            //Toast.makeText(this.activity.applicationContext, "export toast", 5000).show()
-
             val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
             //sharingIntent.type = "*/*"
@@ -148,9 +174,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
 
         private fun saveBackup(): Uri {
-            val fileName = "Count The Days-${System.currentTimeMillis()}.backup"
+            val dateTime = now().toIsoFormatHMSString().replace(":", "_}")
+            val fileName = "Count The Days-$dateTime.backup"
             val backupFile = File(appContext.filesDir, fileName)
-
             File(appContext.filesDir, MainActivity.Settings.settingsFileName +
                     MainActivity.Settings.settingsFileExtension).copyTo(backupFile)
 

@@ -41,23 +41,7 @@ class MainActivity : AppCompatActivity() {
     var editingIndex = -1
 
     val deprecatedGson = Converters.registerDateTime(GsonBuilder()).create()!!
-    val gson = GsonBuilder()/*.registerTypeAdapter<DateTime> {
-
-        write {
-            beginArray()
-            value(it.toString())
-            endArray()
-        }
-        //deserialize { it.json. }
-
-        read {
-            beginArray()
-            val dateTime = nextString()
-            endArray()
-
-            DateTime.parse(dateTime)
-        }
-    }*/.registerTypeAdapter<DayCounter> {
+    val gson = GsonBuilder().registerTypeAdapter<DayCounter> {
         write {
             beginArray()
             value(it.name)
@@ -242,10 +226,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * 1.0 - not in json file, but in shared preferences (bad decision)
-     * 1.1 - first time it is in json settings file, everything stored here
-     */
     private val saveFileVersion: String = "1.1"
 
     val settingsSaveLocation by lazy { applicationContext.filesDir!! }
@@ -255,7 +235,7 @@ class MainActivity : AppCompatActivity() {
         val settingsFileExtension = ".json"
     }
 
-    val file = File(settingsSaveLocation, "${Settings.settingsFileName}${Settings.settingsFileExtension}")
+    val file by lazy { File(settingsSaveLocation, "${Settings.settingsFileName}${Settings.settingsFileExtension}") }
 
     fun saveSettingsJson() {
         val counterListJson = gson.toJsonTree(counterList)
