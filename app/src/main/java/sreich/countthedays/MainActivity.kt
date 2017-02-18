@@ -315,6 +315,7 @@ class MainActivity : AppCompatActivity() {
         val loadedCounterList = gson.fromJson<MutableList<DayCounter>>(counterJson)
 
         counterList = loadedCounterList
+        adapter.notifyDataSetChanged()
     }
 
     var selectedItem = -1
