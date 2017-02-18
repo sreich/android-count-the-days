@@ -2,6 +2,7 @@ package sreich.countthedays
 
 
 import android.annotation.TargetApi
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -20,11 +21,14 @@ import android.preference.PreferenceManager
 import android.preference.RingtonePreference
 import android.support.v4.content.FileProvider
 import android.text.TextUtils
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.github.debop.kodatimes.now
 import com.github.debop.kodatimes.toIsoFormatHMSString
 import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.io.ObjectOutputStream
 
 /**
@@ -43,9 +47,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupActionBar()
-
-        val defprefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val a = defprefs.all
     }
 
     /**
@@ -105,7 +106,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * activity is showing a two-pane settings UI.
      */
     class DataSyncPreferenceFragment : PreferenceFragment() {
-        val appContext by lazy { this.activity.applicationContext!! }
+        val appContext by lazy { activity.applicationContext!! }
+        val prefs by lazy { activity.getSharedPreferences("settings", MODE_PRIVATE)!! }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -147,23 +149,36 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            if (resultCode != RESULT_OK) {
+            if (resultCode != RESULT_OK || data == null || data.data == null) {
                 return
             }
 
             when (requestCode) {
                 REQUEST_BACKUP_IMPORT -> {
-                    importBackup(uri=data!!.dataString)
+                    Log.i(this::class.java.simpleName, "import backup attempt, uri: ${data.data} ")
+                    val inputStream = appContext.contentResolver.openInputStream(data.data)
+                    importBackup(inputStream)
                 }
             }
         }
 
-        private fun importBackup(uri: String) {
-            val file = File(uri)
-            file.readText()
+        private fun InputStream.readText() = readBytes().toString(Charsets.UTF_8)
+        private fun importBackup(input: InputStream) {
+            val json = input.readText()
+
+            Log.i(this::class.java.simpleName, "importing string input: $json")
+            prefs.edit().apply {
+                putString(MainActivity.Settings.settingsJsonKey, json)
+                apply()
+            }
         }
 
         private fun exportBackupIntent() {
+            val jsonSettingsText = prefs.getString(MainActivity.Settings.settingsJsonKey, null)
+            if (jsonSettingsText == null) {
+                Toast.makeText(appContext, "There are no settings to export, please create some :)", 5000).show()
+            }
+
             val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
             //sharingIntent.type = "*/*"
@@ -174,11 +189,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
 
         private fun saveBackup(): Uri {
-            val dateTime = now().toIsoFormatHMSString().replace(":", "_}")
+            val dateTime = now().toIsoFormatHMSString().replace(":", "_")
             val fileName = "Count The Days-$dateTime.backup"
-            val backupFile = File(appContext.filesDir, fileName)
-            File(appContext.filesDir, MainActivity.Settings.settingsFileName +
-                    MainActivity.Settings.settingsFileExtension).copyTo(backupFile)
+
+            val jsonSettingsText = prefs.getString(MainActivity.Settings.settingsJsonKey, null)
+
+            val backupFile = File(appContext.cacheDir, fileName)
+            backupFile.writeText(jsonSettingsText)
 
             // wrap File object into a content provider
             val fileUri = FileProvider.getUriForFile(appContext, "sreich.countthedays.fileprovider", backupFile)
