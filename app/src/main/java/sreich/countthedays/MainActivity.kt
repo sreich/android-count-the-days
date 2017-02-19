@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                 builder.setPositiveButton(i18n(R.string.confirmDialogYes)) { dialog, _ ->
                     counterList.clear()
 
-                    adapter.notifyDataSetChanged()
+                    saveSettingsJson()
 
                     dialog.dismiss()
                 }
