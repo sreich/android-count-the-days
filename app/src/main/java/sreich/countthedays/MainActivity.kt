@@ -187,6 +187,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, SettingsActivity::class.java)
                 startActivity(intent)
 
+
                 true
             }
 

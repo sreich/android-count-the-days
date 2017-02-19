@@ -214,16 +214,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             return fileUri
         }
 
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            val id = item.itemId
-            if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
-                return true
-            }
+        override fun onOptionsItemSelected(item: MenuItem) =
+                if (item.itemId == android.R.id.home) {
+                    startActivity(Intent(activity, SettingsActivity::class.java))
+                    true
+                } else super.onOptionsItemSelected(item)
 
-
-            return super.onOptionsItemSelected(item)
-        }
     }
 
     class AboutPreferenceFragment : Fragment() {
@@ -267,17 +263,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             return viewGroup
         }
 
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            val id = item.itemId
-            return when (id) {
-                android.R.id.home -> {
-                    startActivity(Intent(activity, SettingsActivity::class.java))
-                    return true
-                }
+        override fun onOptionsItemSelected(item: MenuItem) =
+                when (item.itemId) {
+                    android.R.id.home -> {
+                        startActivity(Intent(activity, SettingsActivity::class.java))
+                        true
+                    }
 
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
+                    else -> super.onOptionsItemSelected(item)
+                }
     }
 
     companion object {
@@ -315,9 +309,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          * Helper method to determine if the device has an extra-large screen. For
          * example, 10" tablets are extra-large.
          */
-        private fun isXLargeTablet(context: Context): Boolean {
-            return context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
-        }
+        private fun isXLargeTablet(context: Context) =
+                context.resources.configuration.screenLayout and
+                        Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
 
         /**
          * Binds a preference's summary to its value. More specifically, when the
