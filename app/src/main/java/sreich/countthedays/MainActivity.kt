@@ -30,9 +30,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.internal.Streams.write
 import com.google.gson.reflect.TypeToken
-import com.mcxiaoke.koi.ext.find
-import com.mcxiaoke.koi.ext.startActivity
-import com.mcxiaoke.koi.ext.startActivityForResult
+import com.mcxiaoke.koi.ext.*
 import mehdi.sakout.aboutpage.AboutPage
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
@@ -84,8 +82,9 @@ class MainActivity : AppCompatActivity() {
         val toolbar = find<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val createNewFab = find<FloatingActionButton>(R.id.fab)
-        createNewFab.setOnClickListener(FabCreateNewClickListener())
+        val createNewFab = find<FloatingActionButton>(R.id.fab).apply {
+            onClick { onCreateNewFabClick() }
+        }
 
         registerForContextMenu(listView)
 
@@ -101,6 +100,11 @@ class MainActivity : AppCompatActivity() {
         listView.itemAnimator = DefaultItemAnimator()
 
         listView.addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
+    }
+
+    private fun onCreateNewFabClick() {
+        val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
+        startActivityForResult(intent, ActivityRequest.CreateListItem.value)
     }
 
     private fun sharedPreferencesChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -348,13 +352,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     var selectedItem = -1
-
-    inner class FabCreateNewClickListener : View.OnClickListener {
-        override fun onClick(view: View) {
-            val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
-            startActivityForResult(intent, ActivityRequest.CreateListItem.value)
-        }
-    }
 
     inner class ListClickListener : RecyclerTouchListener.ClickListener {
         override fun onClick(view: View, position: Int) {
