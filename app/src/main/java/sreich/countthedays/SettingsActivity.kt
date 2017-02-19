@@ -73,6 +73,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             = PreferenceFragment::class.java.name == fragmentName
             || GeneralPreferenceFragment::class.java.name == fragmentName
             || DataSyncPreferenceFragment::class.java.name == fragmentName
+            || AboutPreferenceFragment::class.java.name == fragmentName
 
     /**
      * This fragment shows general preferences only. It is used when the
@@ -211,6 +212,29 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             }
 
 
+            return super.onOptionsItemSelected(item)
+        }
+    }
+
+    class AboutPreferenceFragment : PreferenceFragment() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            addPreferencesFromResource(R.xml.pref_about)
+            setHasOptionsMenu(true)
+
+            // Bind the summaries of EditText/List/Dialog preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            bindPreferenceSummaryToValue(findPreference("example_text"))
+        }
+
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+            val id = item.itemId
+            if (id == android.R.id.home) {
+                startActivity(Intent(activity, SettingsActivity::class.java))
+                return true
+            }
             return super.onOptionsItemSelected(item)
         }
     }

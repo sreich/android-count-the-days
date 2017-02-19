@@ -9,7 +9,12 @@
 
     <header
         android:fragment="sreich.countthedays.SettingsActivity$DataSyncPreferenceFragment"
-        android:icon="@drawable/ic_sync_black_24dp"
+        android:icon="@drawable/ic_backup_black_24dp"
         android:title="@string/pref_header_data_sync" />
+
+    <header
+        android:fragment="sreich.countthedays.SettingsActivity$AboutPreferenceFragment"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="@string/pref_header_about" />
 
 </preference-headers>
