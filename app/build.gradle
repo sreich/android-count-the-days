@@ -28,6 +28,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        buildConfigField 'String', 'BUILD_TIME', 'new java.text.SimpleDateFormat("MM.dd.yy HH:mm",java.util.Locale.GERMANY).format(new java.util.Date(' + System.
+                currentTimeMillis() + 'L))'
     }
 
     buildTypes {

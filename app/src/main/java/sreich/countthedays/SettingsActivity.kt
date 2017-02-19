@@ -6,6 +6,8 @@ import android.app.Fragment
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageItemInfo
 import android.content.res.Configuration
 import android.media.Ringtone
 import android.media.RingtoneManager
@@ -226,51 +228,40 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 //            addPreferencesFromResource(R.xml.pref_about)
-  //          setHasOptionsMenu(true)
+            //          setHasOptionsMenu(true)
 
             // Bind the summaries of EditText/List/Dialog preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
- //           bindPreferenceSummaryToValue(findPreference("example_text"))
+            //           bindPreferenceSummaryToValue(findPreference("example_text"))
         }
 
         override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
             val viewGroup = inflater!!.inflate(R.xml.pref_about, container, false) as ViewGroup
-            val versionElement = Element()
-            versionElement.title = "Version 6.2"
 
-            val adsElement = Element()
-            adsElement.title = "Advertise with us"
+            val versionElement = Element().apply {
+                title = "Version ${BuildConfig.VERSION_NAME}"
+            }
 
-            val aboutPage = AboutPage(activity)
-                    .isRTL(false)
-                    .addItem(versionElement)
-                    .addItem(adsElement)
-                    .addGroup("Connect with us")
-                    .addEmail("elmehdi.sakout@gmail.com")
-                    .addFacebook("the.medy")
-                    .addTwitter("medyo80")
-                    .addYoutube("UCdPQtdWIsg7_pi4mrRu46vA")
-                    .addPlayStore("com.ideashower.readitlater.pro")
-                    .addInstagram("medyo80")
-                    .addGitHub("medyo")
-                    .create()
+            val buildTimeElement = Element().apply {
+                title = "Build time ${BuildConfig.BUILD_TIME}"
+            }
+
+            val aboutPage = AboutPage(activity).apply {
+                isRTL(false)
+//                    .setImage(R.drawable.abc_action_bar_item_background_material)
+                setDescription(i18n(R.string.aboutDescription))
+                addItem(versionElement)
+                addItem(buildTimeElement)
+                addGroup(i18n(R.string.aboutGroup))
+                addEmail(i18n(R.string.aboutEmail))
+                addGitHub(i18n(R.string.aboutGithub))
+                addPlayStore(BuildConfig.APPLICATION_ID)
+            }.create()
 
             viewGroup.addView(aboutPage)
-//
-//            val aboutPage = AboutPage(activity)
-//                    .isRTL(false)
-//                    .setImage(R.drawable.abc_action_bar_item_background_material)
-//                    .setDescription("description here")
-////                        .addItem(versionElement)
-//                    //                       .addItem(adsElement)
-//                    .addGroup("Connect with us")
-//                    .addEmail("elmehdi.sakout@gmail.com")
-//                    .addPlayStore(i18n(R.string.package_name))
-//                    .addGitHub("medyo")
-//                    .create()
+
             return viewGroup
         }
 
