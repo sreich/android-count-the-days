@@ -268,6 +268,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i(this::class.java.simpleName, "finished saving settings to json (sharedprefs)")
+        adapter.notifyDataSetChanged()
     }
 
     /**
