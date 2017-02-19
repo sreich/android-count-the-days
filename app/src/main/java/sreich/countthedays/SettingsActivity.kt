@@ -32,6 +32,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.github.debop.kodatimes.now
 import com.github.debop.kodatimes.toIsoFormatHMSString
+import com.mcxiaoke.koi.ext.longToast
+import com.mcxiaoke.koi.log.logi
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
 import java.io.File
@@ -145,8 +147,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         private val REQUEST_BACKUP_IMPORT = 1
 
         private fun importBackupIntent() {
-            //Toast.makeText(this.activity.applicationContext, "import toast", 5000).show()
-
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "text/plain"
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -174,20 +174,19 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         private fun importBackup(input: InputStream) {
             val json = input.readText()
             //todo we should validate we can parse this before storing, but i'm a bit lazy right now
-
             Log.i(this::class.java.simpleName, "importing string input: $json")
             prefs.edit().apply {
                 putString(MainActivity.Settings.settingsJsonKey, json)
                 apply()
             }
 
-            Toast.makeText(appContext, "Settings have been imported", 5000).show()
+            longToast(i18n(R.string.settingsImportedToast))
         }
 
         private fun exportBackupIntent() {
             val jsonSettingsText = prefs.getString(MainActivity.Settings.settingsJsonKey, null)
             if (jsonSettingsText == null) {
-                Toast.makeText(appContext, "There are no settings to export, please create some :)", 5000).show()
+                longToast(i18n(R.string.settingsExportNotAvailableToast))
             }
 
             val fileUri = saveBackup()
@@ -195,7 +194,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             val sharingIntent = Intent(android.content.Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
-                startActivity(Intent.createChooser(this, "Share backup to..."))
+                startActivity(Intent.createChooser(this, i18n(R.string.settubgsShareBackupTo)))
             }
         }
 
