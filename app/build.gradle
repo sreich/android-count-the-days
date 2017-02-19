@@ -5,6 +5,10 @@ buildscript {
         jodaTime = "2.9.7"
         jodaTimeSerializers = "1.5.0"
     }
+
+    dependencies {
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.2'
+    }
 }
 
 plugins {
@@ -16,6 +20,7 @@ plugins {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 25
@@ -48,8 +53,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:$jodaTimeSerializers"
 
+    compile "com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:$jodaTimeSerializers"
+    compile 'com.mcxiaoke.koi:core:0.5.4'
     compile "joda-time:joda-time:$jodaTime"
     compile "com.google.code.gson:gson:$gsonVersion"
     compile "com.github.debop:koda-time:1.0.0"
