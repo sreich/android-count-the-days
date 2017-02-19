@@ -25,9 +25,4 @@
             android:title="Export Backup To..."
             android:key="@string/exportBackup"
             android:summary="Export a new backup of all app data to a place of your choosing"/>
-    <!--<Preference-->
-            <!--android:title="Share Backup"-->
-            <!--android:key="@string/importBackup"-->
-            <!--android:icon="@android:drawable/ic_menu_share"-->
-            <!--android:summary="Export a backup of all app data"/>-->
 </PreferenceScreen>

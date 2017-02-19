@@ -60,28 +60,27 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * Set up the [android.app.ActionBar], if the API is available.
      */
-    private fun setupActionBar() {
-        val actionBar = supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-    }
+    private fun setupActionBar() = supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    override fun onIsMultiPane(): Boolean {
-        return isXLargeTablet(this)
-    }
+    override fun onIsMultiPane() = isXLargeTablet(this)
 
-    override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
-        loadHeadersFromResource(R.xml.pref_headers, target)
-    }
+    override fun onBuildHeaders(target: List<PreferenceActivity.Header>) =
+            loadHeadersFromResource(R.xml.pref_headers, target)
 
     /**
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
-    override fun isValidFragment(fragmentName: String): Boolean
-            = PreferenceFragment::class.java.name == fragmentName
-            || GeneralPreferenceFragment::class.java.name == fragmentName
-            || DataSyncPreferenceFragment::class.java.name == fragmentName
-            || AboutPreferenceFragment::class.java.name == fragmentName
+    override fun isValidFragment(fragmentName: String) =
+            when (fragmentName) {
+                PreferenceFragment::class.java.name,
+                GeneralPreferenceFragment::class.java.name,
+                DataSyncPreferenceFragment::class.java.name,
+                AboutPreferenceFragment::class.java.name
+                -> true
+                else -> false
+            }
+
 
     /**
      * This fragment shows general preferences only. It is used when the
@@ -100,14 +99,14 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             bindPreferenceSummaryToValue(findPreference("example_text"))
         }
 
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            val id = item.itemId
-            if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
-                return true
-            }
-            return super.onOptionsItemSelected(item)
-        }
+        override fun onOptionsItemSelected(item: MenuItem) =
+                when (id) {
+                    android.R.id.home -> {
+                        startActivity(Intent(activity, SettingsActivity::class.java))
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(item)
+                }
     }
 
     /**
@@ -174,12 +173,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         private fun InputStream.readText() = readBytes().toString(Charsets.UTF_8)
         private fun importBackup(input: InputStream) {
             val json = input.readText()
+            //todo we should validate we can parse this before storing, but i'm a bit lazy right now
 
             Log.i(this::class.java.simpleName, "importing string input: $json")
             prefs.edit().apply {
                 putString(MainActivity.Settings.settingsJsonKey, json)
                 apply()
             }
+
+            Toast.makeText(appContext, "Settings have been imported", 5000).show()
         }
 
         private fun exportBackupIntent() {
@@ -188,13 +190,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 Toast.makeText(appContext, "There are no settings to export, please create some :)", 5000).show()
             }
 
-            val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
-            sharingIntent.type = "text/plain"
-            //sharingIntent.type = "*/*"
             val fileUri = saveBackup()
-            sharingIntent.putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
 
-            startActivity(Intent.createChooser(sharingIntent, "Share backup to..."))
+            val sharingIntent = Intent(android.content.Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
+                startActivity(Intent.createChooser(this, "Share backup to..."))
+            }
         }
 
         private fun saveBackup(): Uri {
@@ -267,12 +269,14 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
-            if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
-                return true
-            }
+            return when (id) {
+                android.R.id.home -> {
+                    startActivity(Intent(activity, SettingsActivity::class.java))
+                    return true
+                }
 
-            return super.onOptionsItemSelected(item)
+                else -> super.onOptionsItemSelected(item)
+            }
         }
     }
 

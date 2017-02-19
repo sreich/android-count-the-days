@@ -68,4 +68,8 @@
     <string name="aboutGroup">Connect with me</string>
     <string name="aboutEmail">sreich02@gmail.com</string>
     <string name="aboutGithub">sreich/android-count-the-days</string>
+    <string name="newCounterNameFieldHint">Name of Counter</string>
+    <string name="newCounterChooseDateButton">Choose date</string>
+    <string name="newCounterCancelButton">Cancel</string>
+    <string name="newCounterOkButton">OK</string>
 </resources>
