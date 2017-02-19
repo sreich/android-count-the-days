@@ -61,8 +61,17 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var adapter: DayCounterAdapter
     val prefs by lazy { getSharedPreferences("settings", MODE_PRIVATE)!! }
+
+    //fixme i ran into some issues with this using a lambda..it also didn't like it if i just passed
+    // a method ref. i even tried holding a strong reference to it cuz android docs have it held in a weak hashmap
+    val prefsChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        sharedPreferencesChanged(sharedPreferences, key)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.i(this::class.java.simpleName, "mainactivity getting created")
 
         setContentView(R.layout.activity_main)
 
@@ -72,16 +81,14 @@ class MainActivity : AppCompatActivity() {
         val createNewFab = findViewById(R.id.fab) as FloatingActionButton
         createNewFab.setOnClickListener(FabCreateNewClickListener())
 
-        prefs.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-            sharedPreferencesChanged(sharedPreferences, key)
-        }
-
-        loadSettingsData()
-
         val listView = findViewById(R.id.listview) as RecyclerView
         registerForContextMenu(listView)
 
         listView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+
+        loadSettingsData()
+
+        prefs.registerOnSharedPreferenceChangeListener(prefsChangeListener)
 
         adapter = DayCounterAdapter(context = this, counterList = counterList)
         listView.adapter = adapter
@@ -92,8 +99,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sharedPreferencesChanged(sharedPreferences: SharedPreferences, key: String) {
+        Log.i(this::class.java.simpleName, "sharedprefs changed, reloading counters from settings")
+
         //todo prolly add a "just saved don't reload" thing...
         loadSettingsJson()
+
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun onDestroy() {
+        Log.i(this::class.java.simpleName, "mainactivity getting destroyed")
     }
 
     /**
@@ -244,6 +259,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun saveSettingsJson() {
+        Log.i(this::class.java.simpleName, "saving settings to json (sharedprefs)")
         val counterListJson = gson.toJsonTree(counterList)
 
         val settingsJson: JsonObject = jsonObject(
@@ -254,6 +270,8 @@ class MainActivity : AppCompatActivity() {
             putString(Settings.settingsJsonKey, settingsJson.toString())
             apply()
         }
+
+        Log.i(this::class.java.simpleName, "finished saving settings to json (sharedprefs)")
     }
 
     /**
@@ -261,6 +279,7 @@ class MainActivity : AppCompatActivity() {
      * if it's all empty
      */
     private fun loadSettingsData() {
+        Log.i(this::class.java.simpleName, "loading settings data")
         //we do not yet ever clear sharedprefs..it's our backup for now, in
         //case a rollout screws things up
         //todo in the future, delete this..maybe after a few versions
@@ -271,6 +290,7 @@ class MainActivity : AppCompatActivity() {
         //conversion from 1.0 data format when we stored it in default sharedprefs
         //so convert it to json and clear it, write out to new sharedprefs json format
         if (deprecatedJson != null) {
+            Log.i(this::class.java.simpleName, "upgrading settings data from 1.0")
             //we only perform the 1.0 -> 1.1 upgrade if the json output doesn't exist
             // (so it only runs once)
             //since shared prefs is migrated from after this first run, and kept until we
@@ -315,7 +335,7 @@ class MainActivity : AppCompatActivity() {
         val loadedCounterList = gson.fromJson<MutableList<DayCounter>>(counterJson)
 
         counterList = loadedCounterList
-        adapter.notifyDataSetChanged()
+        Log.i(this::class.java.simpleName, "finished loading settings list, counters size ${counterList.size}")
     }
 
     var selectedItem = -1
