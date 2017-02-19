@@ -228,7 +228,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 //            addPreferencesFromResource(R.xml.pref_about)
-            //          setHasOptionsMenu(true)
+            setHasOptionsMenu(true)
 
             // Bind the summaries of EditText/List/Dialog preferences
             // to their values. When their values change, their summaries are
@@ -265,15 +265,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             return viewGroup
         }
 
-//        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//            val id = item.itemId
-//            if (id == android.R.id.home) {
-//                startActivity(Intent(activity, SettingsActivity::class.java))
-//                return true
-//            }
-//
-//            return super.onOptionsItemSelected(item)
-//        }
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+            val id = item.itemId
+            if (id == android.R.id.home) {
+                startActivity(Intent(activity, SettingsActivity::class.java))
+                return true
+            }
+
+            return super.onOptionsItemSelected(item)
+        }
     }
 
     companion object {
