@@ -31,6 +31,8 @@ import com.google.gson.JsonParser
 import com.google.gson.internal.Streams.write
 import com.google.gson.reflect.TypeToken
 import com.mcxiaoke.koi.ext.find
+import com.mcxiaoke.koi.ext.startActivity
+import com.mcxiaoke.koi.ext.startActivityForResult
 import mehdi.sakout.aboutpage.AboutPage
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
@@ -62,6 +64,8 @@ class MainActivity : AppCompatActivity() {
     }.create()
 
     lateinit var adapter: DayCounterAdapter
+    val listView by lazy { find<RecyclerView>(R.id.listview) }
+
     val prefs by lazy { getSharedPreferences("settings", MODE_PRIVATE)!! }
 
     //fixme i ran into some issues with this using a lambda..it also didn't like it if i just passed
@@ -83,7 +87,6 @@ class MainActivity : AppCompatActivity() {
         val createNewFab = find<FloatingActionButton>(R.id.fab)
         createNewFab.setOnClickListener(FabCreateNewClickListener())
 
-        val listView = find<RecyclerView>(R.id.listview)
         registerForContextMenu(listView)
 
         listView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
