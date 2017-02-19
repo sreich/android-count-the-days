@@ -52,6 +52,7 @@ dependencies {
     compile "com.google.code.gson:gson:$gsonVersion"
     compile "com.github.debop:koda-time:1.0.0"
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    compile 'com.github.medyo:android-about-page:1.1.1'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 

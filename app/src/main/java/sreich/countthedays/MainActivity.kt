@@ -30,6 +30,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.internal.Streams.write
 import com.google.gson.reflect.TypeToken
+import mehdi.sakout.aboutpage.AboutPage
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import java.io.File

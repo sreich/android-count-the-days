@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Count The Days</string>
+    <string name="package_name">sreich.countthedays</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
@@ -33,7 +34,7 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value" />
+    <string-array name="multi_select_list_preference_default_value"/>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 

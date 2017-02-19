@@ -2,6 +2,7 @@ package sreich.countthedays
 
 
 import android.annotation.TargetApi
+import android.app.Fragment
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -22,10 +23,15 @@ import android.preference.RingtonePreference
 import android.support.v4.content.FileProvider
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.github.debop.kodatimes.now
 import com.github.debop.kodatimes.toIsoFormatHMSString
+import mehdi.sakout.aboutpage.AboutPage
+import mehdi.sakout.aboutpage.Element
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -216,27 +222,67 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
     }
 
-    class AboutPreferenceFragment : PreferenceFragment() {
+    class AboutPreferenceFragment : Fragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.pref_about)
-            setHasOptionsMenu(true)
+//            addPreferencesFromResource(R.xml.pref_about)
+  //          setHasOptionsMenu(true)
 
             // Bind the summaries of EditText/List/Dialog preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"))
+ //           bindPreferenceSummaryToValue(findPreference("example_text"))
         }
 
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            val id = item.itemId
-            if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
-                return true
-            }
-            return super.onOptionsItemSelected(item)
+        override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+            val viewGroup = inflater!!.inflate(R.xml.pref_about, container, false) as ViewGroup
+            val versionElement = Element()
+            versionElement.title = "Version 6.2"
+
+            val adsElement = Element()
+            adsElement.title = "Advertise with us"
+
+            val aboutPage = AboutPage(activity)
+                    .isRTL(false)
+                    .addItem(versionElement)
+                    .addItem(adsElement)
+                    .addGroup("Connect with us")
+                    .addEmail("elmehdi.sakout@gmail.com")
+                    .addFacebook("the.medy")
+                    .addTwitter("medyo80")
+                    .addYoutube("UCdPQtdWIsg7_pi4mrRu46vA")
+                    .addPlayStore("com.ideashower.readitlater.pro")
+                    .addInstagram("medyo80")
+                    .addGitHub("medyo")
+                    .create()
+
+            viewGroup.addView(aboutPage)
+//
+//            val aboutPage = AboutPage(activity)
+//                    .isRTL(false)
+//                    .setImage(R.drawable.abc_action_bar_item_background_material)
+//                    .setDescription("description here")
+////                        .addItem(versionElement)
+//                    //                       .addItem(adsElement)
+//                    .addGroup("Connect with us")
+//                    .addEmail("elmehdi.sakout@gmail.com")
+//                    .addPlayStore(i18n(R.string.package_name))
+//                    .addGitHub("medyo")
+//                    .create()
+            return viewGroup
         }
+
+//        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//            val id = item.itemId
+//            if (id == android.R.id.home) {
+//                startActivity(Intent(activity, SettingsActivity::class.java))
+//                return true
+//            }
+//
+//            return super.onOptionsItemSelected(item)
+//        }
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package sreich.countthedays
 
+import android.app.Fragment
 import android.content.Context
 
 /**
@@ -7,6 +8,7 @@ import android.content.Context
  */
 
 fun Context.i18n(resourceId: Int) = getString(resourceId)!!
+fun Fragment.i18n(resourceId: Int) = getString(resourceId)!!
 
 /**
  * calls the given block and then calls a 'finalizing' function.
