@@ -217,34 +217,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            ActivityRequest.EditListItem.value -> if (resultCode == RESULT_OK) {
-                val counterToUpdate = counterList[editingIndex]
-
-                val newName = data!!.getStringExtra("name")
-                val newDateTime = data.getSerializableExtra("dateTime") as DateTime
-                counterToUpdate.apply {
-                    name = newName
-                    dateTime = newDateTime
-                }
-
-                adapter.notifyDataSetChanged()
-
-                saveSettingsJson()
-            }
-
-            ActivityRequest.CreateListItem.value -> if (resultCode == RESULT_OK) {
-                //add the new item
-
-                val name = data!!.getStringExtra("name")
-                val dateTime = data.getSerializableExtra("dateTime") as DateTime
-                val newCounter = DayCounter(name = name, dateTime = dateTime)
-
-                counterList.add(newCounter)
-
-                saveSettingsJson()
-            }
+        if (resultCode != RESULT_OK) {
+            return
         }
+
+        when (requestCode) {
+            ActivityRequest.CreateListItem.value -> createListItemFinished(data!!)
+            ActivityRequest.EditListItem.value -> editListItemFinished(data!!)
+        }
+    }
+
+    private fun createListItemFinished(data: Intent) {
+        //add the new item
+        val name = data.getStringExtra("name")
+        val dateTime = data.getSerializableExtra("dateTime") as DateTime
+        val newCounter = DayCounter(name = name, dateTime = dateTime)
+
+        counterList.add(newCounter)
+
+        saveSettingsJson()
+    }
+
+    fun editListItemFinished(data: Intent) {
+        val counterToUpdate = counterList[editingIndex]
+
+        val newName = data.getStringExtra("name")
+        val newDateTime = data.getSerializableExtra("dateTime") as DateTime
+        counterToUpdate.apply {
+            name = newName
+            dateTime = newDateTime
+        }
+
+        adapter.notifyDataSetChanged()
+
+        saveSettingsJson()
     }
 
     object Settings {
