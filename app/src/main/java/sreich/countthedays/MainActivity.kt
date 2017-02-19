@@ -38,8 +38,6 @@ import java.io.File
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    var counterList = mutableListOf<DayCounter>()
-
     var editingIndex = -1
 
     val deprecatedGson = Converters.registerDateTime(GsonBuilder()).create()!!
@@ -90,16 +88,18 @@ class MainActivity : AppCompatActivity() {
 
         listView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
 
-        loadSettingsData()
-
         prefs.registerOnSharedPreferenceChangeListener(prefsChangeListener)
 
-        adapter = DayCounterAdapter(context = this, counterList = counterList)
-        listView.adapter = adapter
-        listView.layoutManager = LinearLayoutManager(applicationContext)
-        listView.itemAnimator = DefaultItemAnimator()
+        adapter = DayCounterAdapter(context = this)
+        listView.apply {
+            adapter = this@MainActivity.adapter
+            layoutManager = LinearLayoutManager(applicationContext)
+            itemAnimator = DefaultItemAnimator()
 
-        listView.addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
+            addOnItemTouchListener(RecyclerTouchListener(applicationContext, listView, ListClickListener()))
+
+            loadSettingsData()
+        }
     }
 
     private fun onCreateNewFabClick() {
@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                 builder.setMessage(i18n(R.string.confirmDialogPrompt))
 
                 builder.setPositiveButton(i18n(R.string.confirmDialogYes)) { dialog, _ ->
-                    counterList.clear()
+                    adapter.counterList.clear()
 
                     saveSettingsJson()
 
@@ -208,14 +208,14 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.delete -> {
                 //delete this one
-                counterList.removeAt(position)
+                adapter.counterList.removeAt(position)
 
                 adapter.notifyDataSetChanged()
                 true
             }
 
             R.id.reset -> {
-                val counter = counterList[position]
+                val counter = adapter.counterList[position]
                 counter.dateTime = DateTime.now()
 
                 adapter.notifyDataSetChanged()
@@ -243,13 +243,16 @@ class MainActivity : AppCompatActivity() {
         val dateTime = data.getSerializableExtra("dateTime") as DateTime
         val newCounter = DayCounter(name = name, dateTime = dateTime)
 
-        counterList.add(newCounter)
+        adapter.counterList.add(newCounter)
+
+        adapter.notifyDataSetChanged()
+        adapter.notifyItemRangeInserted(0, adapter.counterList.size)
 
         saveSettingsJson()
     }
 
     fun editListItemFinished(data: Intent) {
-        val counterToUpdate = counterList[editingIndex]
+        val counterToUpdate = adapter.counterList[editingIndex]
 
         val newName = data.getStringExtra("name")
         val newDateTime = data.getSerializableExtra("dateTime") as DateTime
@@ -257,8 +260,6 @@ class MainActivity : AppCompatActivity() {
             name = newName
             dateTime = newDateTime
         }
-
-        adapter.notifyDataSetChanged()
 
         saveSettingsJson()
     }
@@ -272,10 +273,12 @@ class MainActivity : AppCompatActivity() {
 
     fun saveSettingsJson() {
         Log.i(this::class.java.simpleName, "saving settings to json (sharedprefs)")
-        val counterListJson = gson.toJsonTree(counterList)
+        val counterListJson = gson.toJsonTree(adapter.counterList)
 
         val settingsJson: JsonObject = jsonObject(
-                "saveVersion" to Settings.saveFileVersion,
+                "saveFormatVersion" to Settings.saveFileVersion,
+                "savedWithAppVersion" to BuildConfig.VERSION_NAME,
+                "savedOnDate" to dateNow(),
                 "counters" to counterListJson)
 
         prefs.edit().apply {
@@ -284,7 +287,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i(this::class.java.simpleName, "finished saving settings to json (sharedprefs)")
-        adapter.notifyDataSetChanged()
     }
 
     /**
@@ -322,7 +324,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun upgradeSaveDataFrom1_0(deprecatedJson: String,
                                        deprecatedPrefs: SharedPreferences) {
-        counterList = deprecatedGson.fromJson<MutableList<DayCounter>>(deprecatedJson)
+        adapter.counterList = deprecatedGson.fromJson<MutableList<DayCounter>>(deprecatedJson)
 
         deprecatedPrefs.edit().apply {
             clear()
@@ -336,19 +338,20 @@ class MainActivity : AppCompatActivity() {
     private fun loadSettingsJson() {
         val settingsJsonValue = prefs.getString(Settings.settingsJsonKey, null)
         if (settingsJsonValue == null) {
-            counterList = sampleData()
+            adapter.counterList = sampleData()
             return
         }
 
         val fileJsonElement = JsonParser().parse(settingsJsonValue)
 
-        val versionString = fileJsonElement["saveVersion"].asString
+        val versionString = fileJsonElement["saveFormatVersion"].asString
 
         val counterJson = fileJsonElement["counters"]
         val loadedCounterList = gson.fromJson<MutableList<DayCounter>>(counterJson)
 
-        counterList = loadedCounterList
-        Log.i(this::class.java.simpleName, "finished loading settings list, counters size ${counterList.size}")
+        adapter.counterList = loadedCounterList
+        Log.i(this::class.java.simpleName, "finished loading settings list, counters size ${adapter.counterList.size}")
+        adapter.notifyDataSetChanged()
     }
 
     var selectedItem = -1
@@ -357,7 +360,7 @@ class MainActivity : AppCompatActivity() {
         override fun onClick(view: View, position: Int) {
             val intent = Intent(this@MainActivity, NewCounterActivity::class.java)
             editingIndex = position
-            val counter = counterList[position]
+            val counter = adapter.counterList[position]
 
             intent.putExtra("name", counter.name)
             intent.putExtra("dateTime", counter.dateTime)

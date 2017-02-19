@@ -27,10 +27,12 @@ android {
     buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "sreich.countthedays"
+
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 2
-        versionName "1.0"
+
+        versionCode 3
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         buildConfigField 'String', 'BUILD_TIME', 'new java.text.SimpleDateFormat("MM.dd.yy HH:mm",java.util.Locale.GERMANY).format(new java.util.Date(' + System.
@@ -58,7 +60,6 @@ dependencies {
     compile 'com.mcxiaoke.koi:core:0.5.4'
     compile "joda-time:joda-time:$jodaTime"
     compile "com.google.code.gson:gson:$gsonVersion"
-    compile "com.github.debop:koda-time:1.0.0"
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
     compile 'com.github.medyo:android-about-page:1.1.1'
 

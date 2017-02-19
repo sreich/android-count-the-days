@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.github.debop.kodatimes.now
 import com.mcxiaoke.koi.ext.find
 import org.joda.time.*
 import sreich.countthedays.DayCounterAdapter.DayViewHolder
@@ -19,8 +20,9 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by sreich on 10/9/16.
  */
-class DayCounterAdapter(context: Context,
-                        val counterList: MutableList<DayCounter>) : RecyclerView.Adapter<DayViewHolder>() {
+class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>() {
+    var counterList = mutableListOf<DayCounter>()
+
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind(counterList[position])
     }
@@ -49,6 +51,7 @@ class DayCounterAdapter(context: Context,
             dateTextView.text = dateViewText(period)
         }
 
+        //todo this needs redone, but it works for now..
         fun dateViewText(period: Period): String {
             val years = period.years
             val months = period.months
