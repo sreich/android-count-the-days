@@ -30,6 +30,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.internal.Streams.write
 import com.google.gson.reflect.TypeToken
+import com.mcxiaoke.koi.ext.find
 import mehdi.sakout.aboutpage.AboutPage
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
@@ -76,13 +77,13 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = find<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val createNewFab = findViewById(R.id.fab) as FloatingActionButton
+        val createNewFab = find<FloatingActionButton>(R.id.fab)
         createNewFab.setOnClickListener(FabCreateNewClickListener())
 
-        val listView = findViewById(R.id.listview) as RecyclerView
+        val listView = find<RecyclerView>(R.id.listview)
         registerForContextMenu(listView)
 
         listView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.mcxiaoke.koi.ext.find
 import org.joda.time.*
 import sreich.countthedays.DayCounterAdapter.DayViewHolder
 import java.text.DateFormat
@@ -35,8 +36,8 @@ class DayCounterAdapter(context: Context,
 
     class DayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var nameTextView: TextView = itemView.findViewById(R.id.name_text_view) as TextView
-        var dateTextView: TextView = itemView.findViewById(R.id.date_text_view) as TextView
+        var nameTextView: TextView = itemView.find<TextView>(R.id.name_text_view)
+        var dateTextView: TextView = itemView.find<TextView>(R.id.date_text_view)
 
         fun bind(counter: DayCounter) {
             nameTextView.text = counter.name

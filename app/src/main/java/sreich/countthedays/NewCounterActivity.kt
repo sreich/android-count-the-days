@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import com.mcxiaoke.koi.ext.find
 import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
 import org.joda.time.format.DateTimeFormat
@@ -37,7 +38,7 @@ class NewCounterActivity : AppCompatActivity() {
 
         activityInit()
 
-        val nameText = findViewById(R.id.nameText) as EditText
+        val nameText = find<EditText>(R.id.nameText)
         nameText.setText(intent.getStringExtra("name"))
         nameText.addTextChangedListener(TextChangedListener())
 
@@ -51,7 +52,7 @@ class NewCounterActivity : AppCompatActivity() {
 
         }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth)
 
-        dateButton = (findViewById(R.id.dateButton) as Button).apply {
+        dateButton = find<Button>(R.id.dateButton).apply {
             setOnClickListener {
                 dateDialog.show()
             }
@@ -59,7 +60,7 @@ class NewCounterActivity : AppCompatActivity() {
             text = formatDate(dateTime)
         }
 
-        val okButton = findViewById(R.id.ok) as Button
+        val okButton = find<Button>(R.id.ok)
         okButton.setOnClickListener {
             val data = Intent()
             data.putExtra("name", nameText.text.toString())
@@ -69,7 +70,7 @@ class NewCounterActivity : AppCompatActivity() {
             finish()
         }
 
-        val cancelButton = findViewById(R.id.cancel) as Button
+        val cancelButton = find<Button>(R.id.cancel)
         cancelButton.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
@@ -78,7 +79,7 @@ class NewCounterActivity : AppCompatActivity() {
 
     inner class TextChangedListener : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            val okButton = findViewById(R.id.ok) as Button
+            val okButton = find<Button>(R.id.ok)
             okButton.isEnabled = !s.isNullOrEmpty()
         }
 
@@ -92,7 +93,7 @@ class NewCounterActivity : AppCompatActivity() {
 
     private fun activityInit() {
         setContentView(R.layout.activity_new_counter)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = find<Toolbar>(R.id.toolbar)
 
         setSupportActionBar(toolbar)
 
