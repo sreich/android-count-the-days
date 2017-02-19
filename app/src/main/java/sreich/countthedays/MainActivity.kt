@@ -107,10 +107,6 @@ class MainActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    override fun onDestroy() {
-        Log.i(this::class.java.simpleName, "mainactivity getting destroyed")
-    }
-
     /**
      * data for testing and first time startup
      */
