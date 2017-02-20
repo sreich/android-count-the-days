@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import com.github.debop.kodatimes.now
 import com.mcxiaoke.koi.ext.find
 import org.joda.time.*
 import sreich.countthedays.DayCounterAdapter.DayViewHolder

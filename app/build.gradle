@@ -68,8 +68,6 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
     compile "com.android.support:design:$androidSupportVersion"
     compile "com.android.support:support-v4:$androidSupportVersion"
-    compile "com.android.support:support-vector-drawable:$androidSupportVersion"
-
 
     testCompile 'junit:junit:4.12'
 }

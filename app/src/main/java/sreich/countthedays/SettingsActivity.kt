@@ -30,12 +30,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.github.debop.kodatimes.now
-import com.github.debop.kodatimes.toIsoFormatHMSString
+import com.mcxiaoke.koi.ext.dateNow
 import com.mcxiaoke.koi.ext.longToast
 import com.mcxiaoke.koi.log.logi
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
+import org.joda.time.DateTime
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -199,7 +199,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
 
         private fun saveBackup(): Uri {
-            val dateTime = now().toIsoFormatHMSString().replace(":", "_")
+            val dateTime = DateTime.now().toDateTimeISO().toString()
             val fileName = "Count The Days-$dateTime.backup"
 
             val jsonSettingsText = prefs.getString(MainActivity.Settings.settingsJsonKey, null)
