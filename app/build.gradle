@@ -32,7 +32,7 @@ android {
         targetSdkVersion 25
 
         versionCode 3
-        versionName "1.1"
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'BUILD_TIME', 'new java.text.SimpleDateFormat("MM.dd.yy HH:mm",java.util.Locale.GERMANY).format(new java.util.Date(' + System.
                 currentTimeMillis() + 'L))'
