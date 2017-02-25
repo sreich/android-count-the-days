@@ -344,7 +344,7 @@ class MainActivity : AppCompatActivity() {
 
         val fileJsonElement = JsonParser().parse(settingsJsonValue)
 
-        val versionString = fileJsonElement["saveFormatVersion"].asString
+        //val versionString = fileJsonElement["saveFormatVersion"].asString
 
         val counterJson = fileJsonElement["counters"]
         val loadedCounterList = gson.fromJson<MutableList<DayCounter>>(counterJson)

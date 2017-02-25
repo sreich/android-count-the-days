@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.*
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.*
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.icu.text.DateFormat
 import android.os.Bundle
@@ -20,6 +21,7 @@ import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import com.mcxiaoke.koi.ext.find
+import com.mcxiaoke.koi.ext.onTextChange
 import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
 import org.joda.time.format.DateTimeFormat
@@ -31,6 +33,7 @@ class NewCounterActivity : AppCompatActivity() {
 
     lateinit var newDateTime: DateTime
     lateinit var dateButton: Button
+    lateinit var timeButton: Button
     lateinit var dateTime: DateTime
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +63,20 @@ class NewCounterActivity : AppCompatActivity() {
             text = formatDate(dateTime)
         }
 
+        //todo can probably clean these up and make them more clear...with kt wrappers of them
+        val timeDialog = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            dateButton.text = "test test test"
+        }, 0, 0, false)
+
+
+        timeButton = find<Button>(R.id.timeButton).apply {
+            setOnClickListener {
+                timeDialog.show()
+            }
+
+            text = formatTime(dateTime)
+        }
+
         val okButton = find<Button>(R.id.ok)
         okButton.setOnClickListener {
             val data = Intent()
@@ -77,6 +94,8 @@ class NewCounterActivity : AppCompatActivity() {
         }
     }
 
+
+    //fixme: create kt wrapper, see koi's onTextChanged
     inner class TextChangedListener : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             val okButton = find<Button>(R.id.ok)
@@ -87,9 +106,11 @@ class NewCounterActivity : AppCompatActivity() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
     }
 
-    private fun formatDate(dateTime: DateTime): String {
-        return dateTime.toString(DateTimeFormat.shortDate())
+    private fun formatTime(dateTime: DateTime): String {
+        return dateTime.toString(DateTimeFormat.shortTime())
     }
+
+    private fun formatDate(dateTime: DateTime): String = dateTime.toString(DateTimeFormat.shortDate())
 
     private fun activityInit() {
         setContentView(R.layout.activity_new_counter)
