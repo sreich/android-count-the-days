@@ -75,4 +75,5 @@
     <string name="settingsImportedToast">Settings have been imported</string>
     <string name="settingsExportNotAvailableToast">There are no settings to export, please create some :)</string>
     <string name="settubgsShareBackupTo">Share backup to...</string>
+    <string name="newCounterChooseTimeButton">Choose time</string>
 </resources>

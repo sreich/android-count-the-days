@@ -59,6 +59,14 @@
                             android:layout_below="@id/nameText"
                             android:hint="@string/newCounterChooseDateButton"
                             android:id="@+id/dateButton"/>
+
+                    <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:layout_below="@id/dateButton"
+                            android:hint="@string/newCounterChooseTimeButton"
+                            android:id="@+id/timeButton"/>
                 </RelativeLayout>
 
                 <LinearLayout
