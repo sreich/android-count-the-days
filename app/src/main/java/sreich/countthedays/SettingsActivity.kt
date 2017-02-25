@@ -53,6 +53,11 @@ import java.io.ObjectOutputStream
    * API Guide](http://developer.android.com/guide/topics/ui/settings.html) for more information on developing a Settings UI.
  */
 class SettingsActivity : AppCompatPreferenceActivity() {
+    override fun onOptionsItemSelected(item: MenuItem) =
+            if (item.itemId == android.R.id.home) {
+                super.onBackPressed()
+                true
+            } else super.onOptionsItemSelected(item)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
