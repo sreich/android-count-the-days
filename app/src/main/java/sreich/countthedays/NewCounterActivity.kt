@@ -65,9 +65,9 @@ class NewCounterActivity : AppCompatActivity() {
 
         //todo can probably clean these up and make them more clear...with kt wrappers of them
         val timeDialog = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-            dateButton.text = "test test test"
-        }, 0, 0, false)
-
+            dateTime = dateTime.withTime(hourOfDay, minute, 0, 0)
+            timeButton.text = formatTime(dateTime)
+        }, 12 - dateTime.hourOfDay, dateTime.minuteOfDay, false)
 
         timeButton = find<Button>(R.id.timeButton).apply {
             setOnClickListener {

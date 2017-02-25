@@ -344,6 +344,7 @@ class MainActivity : AppCompatActivity() {
 
         val fileJsonElement = JsonParser().parse(settingsJsonValue)
 
+        //todo error right now of non-existent..we should make a converter maybe to add it?
         //val versionString = fileJsonElement["saveFormatVersion"].asString
 
         val counterJson = fileJsonElement["counters"]
