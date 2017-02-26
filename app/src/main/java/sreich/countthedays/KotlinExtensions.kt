@@ -3,10 +3,6 @@ package sreich.countthedays
 import android.app.Fragment
 import android.content.Context
 
-/**
- * Created by sreich on 2/12/17.
- */
-
 fun Context.i18n(resourceId: Int) = getString(resourceId)!!
 fun Fragment.i18n(resourceId: Int) = getString(resourceId)!!
 

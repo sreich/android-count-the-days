@@ -16,9 +16,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-/**
- * Created by sreich on 10/9/16.
- */
 class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>() {
     var counterList = mutableListOf<DayCounter>()
 
@@ -37,8 +34,8 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
 
     class DayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var nameTextView: TextView = itemView.find<TextView>(R.id.name_text_view)
-        var dateTextView: TextView = itemView.find<TextView>(R.id.date_text_view)
+        var nameTextView: TextView = itemView.find<TextView>(R.id.nameTextView)
+        var dateTextView: TextView = itemView.find<TextView>(R.id.dateTimeTextView)
 
         fun bind(counter: DayCounter) {
             nameTextView.text = counter.name
@@ -47,36 +44,52 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
 
             val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
 
-            dateTextView.text = dateViewText(period)
+            dateTextView.text = dateTimeViewText(period)
         }
 
-        //todo this needs redone, but it works for now..
-        fun dateViewText(period: Period): String {
+        fun dateTimeViewText(period: Period): String {
             val years = period.years
             val months = period.months
             val days = period.days
+            val hours = period.hours
+            val minutes = period.minutes
 
+            //todo: this needs redone, but it works for now..
+            //this is handling all of our pluralness, obviously it's garbage for translations
             val yearsString = when {
                 years == 1 -> "$years year, "
-                years > 0 || years < 0 -> "$years years, "
+                years != 0 -> "$years years, "
                 else -> ""
             }
 
             val monthsString = when {
                 months == 1 -> "$months month, "
-                months > 0 || months < 0 -> "$months months, "
+                months != 0 -> "$months months, "
                 else -> ""
             }
 
             val daysString = when {
                 days == 1 -> "$days day"
-                days > 0 || days < 0 -> "$days days"
+                days != 0 -> "$days days"
                 else -> ""
             }
+
+            val hoursString = when {
+                hours == 1 -> "$hours hour"
+                hours != 0 -> "$hours hours"
+                else -> ""
+            }
+
+           val minutesString = when {
+                minutes == 1 -> "$minutes minute"
+                minutes != 0 -> "$minutes minutes"
+                else -> ""
+            }
+
             val finalDateText = if (days == 0 && months == 0 && years == 0) {
                 "now"
             } else {
-                "$yearsString$monthsString$daysString"
+                "$yearsString$monthsString$daysString$hoursString$minutesString"
             }
 
             return finalDateText

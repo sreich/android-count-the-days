@@ -1,8 +1,5 @@
 package sreich.countthedays
 
-/**
- * Created by sreich on 10/15/16.
- */
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
