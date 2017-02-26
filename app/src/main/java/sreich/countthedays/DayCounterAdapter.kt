@@ -42,7 +42,7 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
 
             val dateTime = counter.dateTime
 
-            val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
+            val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDayTime())
 
             dateTextView.text = dateTimeViewText(period)
         }
@@ -69,14 +69,14 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
             }
 
             val daysString = when {
-                days == 1 -> "$days day"
-                days != 0 -> "$days days"
+                days == 1 -> "$days day, "
+                days != 0 -> "$days days, "
                 else -> ""
             }
 
             val hoursString = when {
-                hours == 1 -> "$hours hour"
-                hours != 0 -> "$hours hours"
+                hours == 1 -> "$hours hour, "
+                hours != 0 -> "$hours hours, "
                 else -> ""
             }
 
