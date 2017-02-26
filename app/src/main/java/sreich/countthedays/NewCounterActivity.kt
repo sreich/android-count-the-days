@@ -67,7 +67,7 @@ class NewCounterActivity : AppCompatActivity() {
         val timeDialog = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             dateTime = dateTime.withTime(hourOfDay, minute, 0, 0)
             timeButton.text = formatTime(dateTime)
-        }, 12 - dateTime.hourOfDay, dateTime.minuteOfDay, false)
+        }, dateTime.hourOfDay, dateTime.minuteOfHour, false)
 
         timeButton = find<Button>(R.id.timeButton).apply {
             setOnClickListener {

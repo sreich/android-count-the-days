@@ -339,6 +339,7 @@ class MainActivity : AppCompatActivity() {
         val settingsJsonValue = prefs.getString(Settings.settingsJsonKey, null)
         if (settingsJsonValue == null) {
             adapter.counterList = sampleData()
+            //todo: i think we want to save it here too, otherwise we reload from scratch each time?
             return
         }
 
