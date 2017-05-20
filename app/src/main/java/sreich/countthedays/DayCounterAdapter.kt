@@ -89,7 +89,7 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
             val finalDateText = if (days == 0 && months == 0 && years == 0) {
                 "now"
             } else {
-                "$yearsString$monthsString$daysString$hoursString$minutesString"
+                "$yearsString$monthsString$daysString$hoursString$minutesString" //hack  ttttttttttttttteest thing for some long text this way"
             }
 
             return finalDateText

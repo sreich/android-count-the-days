@@ -211,6 +211,8 @@ class MainActivity : AppCompatActivity() {
                 adapter.counterList.removeAt(position)
 
                 adapter.notifyDataSetChanged()
+
+                saveSettingsJson()
                 true
             }
 
@@ -219,6 +221,8 @@ class MainActivity : AppCompatActivity() {
                 counter.dateTime = DateTime.now()
 
                 adapter.notifyDataSetChanged()
+
+                saveSettingsJson()
                 true
             }
 
