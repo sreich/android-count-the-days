@@ -44,7 +44,6 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
             nameTextView.text = counter.name
 
             val dateTime = counter.dateTime
-
             val period = Period(dateTime, DateTime.now(), PeriodType.yearMonthDay())
 
             dateTextView.text = dateViewText(period)
@@ -52,9 +51,14 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
 
         //todo this needs redone, but it works for now..
         fun dateViewText(period: Period): String {
-            val years = period.years
-            val months = period.months
-            val days = period.days
+            // Negative timespan means the date is in the future
+            val future = period.years < 0 || period.months < 0 || period.days < 0
+
+            // Remove the negative sign
+            // TODO: Use builtin math function to calculate absolute value
+            val years = if(period.years < 0) {-1*period.years} else {period.years}
+            val months = if(period.months < 0) {-1*period.months} else {period.months}
+            val days = if(period.days < 0) {-1*period.days} else {period.days}
 
             val yearsString = when {
                 years == 1 -> "$years year, "
@@ -73,10 +77,23 @@ class DayCounterAdapter(context: Context) : RecyclerView.Adapter<DayViewHolder>(
                 days > 0 || days < 0 -> "$days days"
                 else -> ""
             }
+
+            // Hacky solution to calculate the total amount of days
+            // TODO: Use buildin functions in order to calculate the exact day-difference
+            var totalDays = ( 365 * years + 30 * months + days )
+
             val finalDateText = if (days == 0 && months == 0 && years == 0) {
                 "now"
             } else {
-                "$yearsString$monthsString$daysString"
+                // Build the displayed string
+                if (future == true) {
+                    // The date is in the future
+                    "in $yearsString$monthsString$daysString (~$totalDays days)"
+                }
+                else {
+                    // The date was in the past
+                    "$yearsString$monthsString$daysString ago (~$totalDays days)"
+                }
             }
 
             return finalDateText
