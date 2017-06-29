@@ -153,7 +153,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         private fun importBackupIntent() {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                type = "text/plain"
+                // Using MIME type "text/plain" doesn't let you select the file
+                // Use */* so all files could be selected
+                //type = "text/plain"
+                //type = "application/octet-stream"
+                type = "*/*"
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
 
