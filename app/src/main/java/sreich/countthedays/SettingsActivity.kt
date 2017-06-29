@@ -1,6 +1,7 @@
 package sreich.countthedays
 
 
+import android.Manifest
 import android.annotation.TargetApi
 import android.app.Fragment
 import android.content.ContentResolver
@@ -8,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageItemInfo
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.Ringtone
 import android.media.RingtoneManager
@@ -22,6 +24,10 @@ import android.support.v7.app.ActionBar
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.preference.RingtonePreference
+import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.text.TextUtils
 import android.util.Log
@@ -137,9 +143,29 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
             val importBackupPref = findPreference(getString(R.string.importBackup))
             importBackupPref.setOnPreferenceClickListener {
-                importBackupIntent()
+                val readPermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ==  PackageManager.PERMISSION_GRANTED;
+                if (readPermissionGranted){
+                    // Everything is good!
+                    // Bring up the file browser
+                    //Log.v(">>>>", "READ Permission GRANTED");
+                    importBackupIntent()
+                }
+                else {
+                    // We do not have reading permission
+                    // Request it
+                    //
+                    // TODO: Implement callback onRequestPermissionsResult (Problem: Higher API-Version is required)
+                    //       Now it is a bit inconvinient for the user, because he has to click the Import Backup button twice
+                    //       The first time he has to grant the reading permission, the second time the file browser opens
+                    // TODO: Inform the user what is happening
+                    //Log.v(">>>>", "READ Permission NOT granted");
+                    val REQUEST_READ = 0;
+                    val test = Manifest.permission.READ_EXTERNAL_STORAGE.toString();
+                    ActivityCompat.requestPermissions(activity, Array(test.length, {test}), REQUEST_READ);
+                }
                 true
             }
+
 
             val exportBackupPref = findPreference(getString(R.string.exportBackup))
             exportBackupPref.setOnPreferenceClickListener {
@@ -149,9 +175,14 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         }
 
+
+
+
         private val REQUEST_BACKUP_IMPORT = 1
 
         private fun importBackupIntent() {
+            // Check if we have the reading permission
+
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 // Using MIME type "text/plain" doesn't let you select the file
                 // Use */* so all files could be selected
