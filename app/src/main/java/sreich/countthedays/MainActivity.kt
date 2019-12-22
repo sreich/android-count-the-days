@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i(this::class.java.simpleName, "mainactivity getting created")
+        Log.i(this::class.java.simpleName, "mainactivity getting created, 2020sreich")
 
         setContentView(R.layout.activity_main)
 

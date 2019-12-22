@@ -34,13 +34,13 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
         }
         this.orientation = orientation
     }
-
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
-        when (orientation) {
-            VERTICAL_LIST -> drawVertical(c, parent)
-            else -> drawHorizontal(c, parent)
-        }
-    }
+//
+//    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
+//        when (orientation) {
+//            VERTICAL_LIST -> drawVertical(c, parent)
+//            else -> drawHorizontal(c, parent)
+//        }
+//    }
 
     private fun drawVertical(c: Canvas, parent: RecyclerView) {
         val left = parent.paddingLeft
@@ -73,13 +73,13 @@ class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.I
             divider.draw(c)
         }
     }
-
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
-        when (orientation) {
-            VERTICAL_LIST -> outRect.set(0, 0, 0, divider.intrinsicHeight)
-            else -> outRect.set(0, 0, divider.intrinsicWidth, 0)
-        }
-    }
+//
+//    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+//        when (orientation) {
+//            VERTICAL_LIST -> outRect.set(0, 0, 0, divider.intrinsicHeight)
+//            else -> outRect.set(0, 0, divider.intrinsicWidth, 0)
+//        }
+//    }
 
     companion object {
         private val ATTRS = intArrayOf(android.R.attr.listDivider)
