@@ -9,3 +9,4 @@
 .externalNativeBuild
 .idea
 *.apk
+app/release/output.json
