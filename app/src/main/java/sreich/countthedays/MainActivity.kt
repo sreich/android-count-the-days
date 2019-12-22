@@ -1,41 +1,32 @@
 package sreich.countthedays
 
-import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.text.format.DateUtils
 import android.util.Log
-import android.view.*
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ArrayAdapter
-import android.widget.ListView
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import com.fatboyindustrial.gsonjodatime.Converters
-import com.github.salomonbrys.kotson.*
-import com.google.gson.Gson
+import com.github.salomonbrys.kotson.fromJson
+import com.github.salomonbrys.kotson.get
+import com.github.salomonbrys.kotson.jsonObject
+import com.github.salomonbrys.kotson.registerTypeAdapter
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.internal.Streams.write
-import com.google.gson.reflect.TypeToken
-import com.mcxiaoke.koi.ext.*
-import mehdi.sakout.aboutpage.AboutPage
+import com.mcxiaoke.koi.ext.dateNow
+import com.mcxiaoke.koi.ext.find
+import com.mcxiaoke.koi.ext.onClick
 import org.joda.time.DateTime
-import org.joda.time.LocalDate
-import java.io.File
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     var editingIndex = -1
@@ -73,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i(this::class.java.simpleName, "mainactivity getting created, 2020sreich")
+        Log.i(this::class.java.simpleName, "mainactivity getting created")
 
         setContentView(R.layout.activity_main)
 
@@ -210,6 +201,7 @@ class MainActivity : AppCompatActivity() {
                 //delete this one
                 adapter.counterList.removeAt(position)
 
+                saveSettingsJson()
                 adapter.notifyDataSetChanged()
                 true
             }

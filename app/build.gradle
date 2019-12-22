@@ -34,8 +34,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
 
-        versionCode 3
-        versionName "1.1.0"
+        versionCode 4
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'BUILD_TIME', 'new java.text.SimpleDateFormat("MM.dd.yy HH:mm",java.util.Locale.GERMANY).format(new java.util.Date(' + System.
                 currentTimeMillis() + 'L))'
